@@ -1,19 +1,18 @@
-# Elvarg
+<p></p>
+<div align="center"><img width=70.5% src="https://www.giantbomb.com/a/uploads/scale_medium/0/299/439191-runescape_logo.png"></div>
 
-##### Current Data: 206
-##### Launcher Setup: https://github.com/Mark7625/Runelite-Launcher-rsps/blob/main/SETUP.MD
+<div align="center">
 
-### Updated
-1. Textures
-2. Read values
-3. Sprites
-4. Model Class
-5. HD
-6. GPU
-7. Runelite
+![Kotlin](https://img.shields.io/badge/kotlin-1.7.0-green.svg?style=for-the-badge&colorB=7289da)
+[![Support Server](https://img.shields.io/discord/997669045144911966.svg?label=Discord&colorB=7289da&style=for-the-badge)](https://discord.gg/Je6yubHCZF)
+![](https://img.shields.io/tokei/lines/github/ElvargPlus/Client?&colorB=7289da&style=for-the-badge)
+</div>
 
-##### [Original Base Elvarg VERSION 3.2](https://www.rune-server.ee/runescape-development/rs2-server/downloads/660901-economy-version-elvarg-framework-some-skills-improved-core.html)
+## Basic Overview
+This Repository holds all Elvarg's Plus Assets
 
-# Credits
-1. [Professor Oak](https://www.rune-server.ee/members/professor+oak/ )
-2. [Mark](https://www.rune-server.ee/members/Mark_/)
+## Setting Up
+
+## Contributing
+Please take a look at our [contributing](https://github.com/anfederico/clairvoyant/blob/master/CONTRIBUTING.md) guidelines if you're interested in helping!
+
