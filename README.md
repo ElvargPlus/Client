@@ -9,7 +9,7 @@
 </div>
 
 ## Basic Overview
-This Repository holds all Elvarg's Plus Assets
+This Repository holds all Elvarg's Plus Client
 
 -----
 ## Setting Up
