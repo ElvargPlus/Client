@@ -1,2 +1,2 @@
-rootProject.name = "Elvarg-Client-data"
+rootProject.name = "ElvargPlus-Server"
 
