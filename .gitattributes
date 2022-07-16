@@ -1,8 +1,0 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-*.dat filter=lfs diff=lfs merge=lfs -text
-*.idx1 filter=lfs diff=lfs merge=lfs -text
-*.idx2 filter=lfs diff=lfs merge=lfs -text
-*.idx3 filter=lfs diff=lfs merge=lfs -text
-*.idx4 filter=lfs diff=lfs merge=lfs -text
-*.idx5 filter=lfs diff=lfs merge=lfs -text

@@ -161,7 +161,7 @@ fabric.properties
 ### Maven ###
 target/
 build/
-cache/
+./cache/
 out/
 pom.xml.tag
 pom.xml.releaseBackup
