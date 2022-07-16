@@ -1,4 +1,6 @@
 {
+  "groupName": "all",
+  "prCreation": "not-pending",
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base"
