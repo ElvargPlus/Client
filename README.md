@@ -11,8 +11,31 @@
 ## Basic Overview
 This Repository holds all Elvarg's Plus Assets
 
+-----
 ## Setting Up
 
+##### Developer Mode (Recommended)
+
+- No need to pack sprites while Developing or restart when adding
+- Extra Debug Tools
+- Get cache and Server asset files from 1 location so its always in sync
+
+#### Setup:
+1. Import the Project
+2. Pull the assets from this repo https://github.com/ElvargPlus/Assets
+3. Click the Gradle tab and under tasks you will see elvargplus
+   
+<img width=30.5% src="https://i.imgur.com/FogR8aU.png">
+
+4. Run the Client once it starts loading you will get a file chooser for the first time. Locate the main root of your assets that you have just cloned and press ok.
+If you have followed this correct your client will now load. You will only need to do this once or unless you change your asset location
+
+4. <img width=30.5% src="https://i.imgur.com/aIClrQK.png">
+
+##### Normal Mode (Not Recommended)
+THIS WILL NOT WORK YET AS IT HAS NO WAY TO DOWNLOAD THE CACHE
+
+-----
 ## Contributing
 Please take a look at our [contributing](https://github.com/anfederico/clairvoyant/blob/master/CONTRIBUTING.md) guidelines if you're interested in helping!
 
