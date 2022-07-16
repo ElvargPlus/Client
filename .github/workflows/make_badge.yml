@@ -1,26 +1,33 @@
-on: [push]
-name: Run Test
+name: 🖊️ Publish Badge Line Count
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
-  hello_world_job:
+  deploy:
     runs-on: ubuntu-latest
-    name: Test Run
+    name: 🔄 Checking for Updates
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Make Code Badge
+      - name: 🖊️ Make Badge
         uses: shadowmoose/GHA-LoC-Badge@1.0.0
         id: badge
+        
         with:
           debug: true
-          directory: ./
+          badge_style: "flat"
           badge: ./output/badge.svg
-      - name: Deploy to image-data branch
+          ignore: gradle/|README
+          badge_labelcolor: 7289
+          icon: 'award'  
+      - name: 🔨 Deploy to badges branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           publish_dir: ./output
-          publish_branch: image-data
+          publish_branch: badges
           github_token: ${{ secrets.SECRET }}
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'     
