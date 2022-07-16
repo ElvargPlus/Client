@@ -55,8 +55,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.SwingUtilities;
 
-import io.sentry.Sentry;
-import io.sentry.protocol.User;
+import com.runescape.cache.assets.AssetLoader;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -92,7 +91,7 @@ import org.slf4j.LoggerFactory;
 @Slf4j
 public class RuneLite
 {
-	public static final File RUNELITE_DIR = new File(System.getProperty("user.home"), "." + "Elvarg");
+	public static final File RUNELITE_DIR = new File(System.getProperty("user.home"), "." + "ElvargPlus");
 	public static final File CACHE_DIR = new File(RUNELITE_DIR, "cache");
 	public static final File PLUGINS_DIR = new File(RUNELITE_DIR, "plugins");
 	public static final File PROFILES_DIR = new File(RUNELITE_DIR, "profiles");
@@ -101,7 +100,7 @@ public class RuneLite
 	public static final File DEFAULT_SESSION_FILE = new File(RUNELITE_DIR, "session");
 	public static final File DEFAULT_CONFIG_FILE = new File(RUNELITE_DIR, "settings.properties");
 
-	public static boolean devMode = true;
+	public static boolean devMode = false;
 	private static final int MAX_OKHTTP_CACHE_SIZE = 20 * 1024 * 1024; // 20mb
 	public static String USER_AGENT = "RuneLite/" + RuneLiteProperties.getVersion() + "-" + RuneLiteProperties.getCommit() + (RuneLiteProperties.isDirty() ? "+" : "");
 
@@ -246,6 +245,8 @@ public class RuneLite
 							.open());
 					return;
 				}
+				devMode = true;
+				AssetLoader.INSTANCE.initCache();
 			}
 
 			PROFILES_DIR.mkdirs();

@@ -6,7 +6,11 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.RandomAccessFile;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.runescape.Configuration;
+import com.runescape.cache.assets.AssetLoader;
+import net.runelite.client.RuneLite;
 
 public final class SignLink {
 
@@ -93,11 +97,12 @@ public final class SignLink {
         return s.length() == 0 ? null : s;
     }
 
+
     public static String findcachedir() {
-        final File cacheDirectory = new File(Configuration.CACHE_DIRECTORY);
-        if (!cacheDirectory.exists())
-            cacheDirectory.mkdir();
-        return Configuration.CACHE_DIRECTORY;
+        if(!RuneLite.CACHE_DIR.exists()) {
+            RuneLite.CACHE_DIR.mkdirs();
+        }
+        return RuneLite.devMode ? AssetLoader.INSTANCE.getCache().getAbsolutePath() + "/" : RuneLite.CACHE_DIR.getAbsolutePath();
     }
     
     public static String indexLocation(int cacheIndex, int index) {
