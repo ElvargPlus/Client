@@ -28,7 +28,7 @@ dependencies {
 
     implementation(group = "ch.qos.logback", name = "logback-classic", version = "1.2.11")
     implementation(group = "com.google.code.gson", name = "gson", version = "2.9.0")
-    implementation(group = "com.google.guava", name = "guava", version = "30.1.1-jre") {
+    implementation(group = "com.google.guava", name = "guava", version = "31.1-jre") {
         exclude(group = "com.google.code.findbugs", module = "jsr305")
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
         exclude(group = "com.google.j2objc", module = "j2objc-annotations")
