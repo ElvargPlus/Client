@@ -9,7 +9,7 @@ repositories {
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.7.10"
 }
 
 tasks.withType<KotlinCompile> {
@@ -26,28 +26,28 @@ dependencies {
     compileOnly(group = "org.projectlombok", name = "lombok", version = "1.18.24")
     compileOnly(group = "net.runelite", name = "orange-extensions", version = "1.0")
 
-    implementation(group = "ch.qos.logback", name = "logback-classic", version = "1.2.9")
-    implementation(group = "com.google.code.gson", name = "gson", version = "2.8.5")
+    implementation(group = "ch.qos.logback", name = "logback-classic", version = "1.2.11")
+    implementation(group = "com.google.code.gson", name = "gson", version = "2.9.0")
     implementation(group = "com.google.guava", name = "guava", version = "30.1.1-jre") {
         exclude(group = "com.google.code.findbugs", module = "jsr305")
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
         exclude(group = "com.google.j2objc", module = "j2objc-annotations")
         exclude(group = "org.codehaus.mojo", module = "animal-sniffer-annotations")
     }
-    implementation(group = "com.google.inject", name = "guice", version = "5.0.1")
-    implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.9.1")
+    implementation(group = "com.google.inject", name = "guice", version = "5.1.0")
+    implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.10.0")
 
-    implementation(group = "net.java.dev.jna", name = "jna", version = "5.9.0")
-    implementation(group = "net.java.dev.jna", name = "jna-platform", version = "5.9.0")
+    implementation(group = "net.java.dev.jna", name = "jna", version = "5.12.1")
+    implementation(group = "net.java.dev.jna", name = "jna-platform", version = "5.12.1")
     implementation(group = "net.runelite", name = "discord", version = "1.4")
     implementation(group = "net.runelite.pushingpixels", name = "substance", version = "8.0.02")
     implementation(group = "net.sf.jopt-simple", name = "jopt-simple", version = "5.0.4")
     implementation(group = "org.apache.commons", name = "commons-text", version = "1.9")
     implementation(group = "org.apache.commons", name = "commons-csv", version = "1.9.0")
-    implementation(group = "commons-io", name = "commons-io", version = "2.8.0")
+    implementation(group = "commons-io", name = "commons-io", version = "2.11.0")
     implementation(group = "org.jetbrains", name = "annotations", version = "22.0.0")
-    implementation(group = "io.github.microutils", name = "kotlin-logging-jvm", version = "2.1.20")
-    implementation(group = "org.slf4j", name = "slf4j-simple", version = "1.7.29")
+    implementation(group = "io.github.microutils", name = "kotlin-logging-jvm", version = "2.1.23")
+    implementation(group = "org.slf4j", name = "slf4j-simple", version = "1.7.36")
 
 
     runtimeOnly(group = "net.runelite.pushingpixels", name = "trident", version = "1.5.00")
