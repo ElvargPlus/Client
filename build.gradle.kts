@@ -45,7 +45,7 @@ dependencies {
     implementation(group = "org.apache.commons", name = "commons-text", version = "1.9")
     implementation(group = "org.apache.commons", name = "commons-csv", version = "1.9.0")
     implementation(group = "commons-io", name = "commons-io", version = "2.11.0")
-    implementation(group = "org.jetbrains", name = "annotations", version = "22.0.0")
+    implementation(group = "org.jetbrains", name = "annotations", version = "23.0.0")
     implementation(group = "io.github.microutils", name = "kotlin-logging-jvm", version = "2.1.23")
     implementation(group = "org.slf4j", name = "slf4j-simple", version = "1.7.36")
 
