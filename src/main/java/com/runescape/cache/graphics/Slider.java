@@ -103,8 +103,8 @@ public class Slider {
                 Client.cameraZoom = (int) (minValue + maxValue - value);
                 break;
             case BRIGHTNESS:
-                Client.brightnessState = minValue + maxValue - value;
-                Rasterizer3D.setBrightness(minValue + maxValue - value);
+                Client.brightnessState = (float) (minValue + maxValue - value);
+                Rasterizer3D.calculatePalette((float) (minValue + maxValue - value));
                 break;
             case MUSIC:
                 Client.instance.changeMusicVolume((int) (minValue + maxValue - value));

@@ -37,7 +37,6 @@ public final class SpriteCache implements Closeable {
 
         cache = new Sprite[spriteCount];
 
-        System.out.println(String.format("Sprite cache size=%d", cache.length));
     }
 
     public Sprite lookup(int id) {

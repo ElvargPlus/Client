@@ -155,6 +155,8 @@ public final class Buffer extends Cacheable {
         return ((payload[currentPosition - 3] & 0xFF) << 24) + ((payload[currentPosition - 4] & 0xFF) << 16) + ((payload[currentPosition - 1] & 0xFF) << 8) + (payload[-2] & 0xFF);
     }
 
+
+
     public int readUnsignedByte() {
         return payload[currentPosition++] & 0xff;
     }
@@ -185,6 +187,12 @@ public final class Buffer extends Cacheable {
         currentPosition += 2;
         return ((payload[currentPosition - 2] & 0xff) << 8)
                 + (payload[currentPosition - 1] & 0xff);
+    }
+
+    public int readMedium()
+    {
+        currentPosition += 3;
+        return ((payload[currentPosition - 3] & 0xff) << 16) | ((payload[currentPosition - 2] & 0xff) << 8) | (payload[currentPosition - 1] & 0xff);
     }
 
     public int readShort() {
@@ -227,6 +235,13 @@ public final class Buffer extends Cacheable {
     public String readString() {
         int index = currentPosition;
         while (payload[currentPosition++] != 10)
+            ;
+        return new String(payload, index, currentPosition - index - 1);
+    }
+
+    public String readStringJagex() {
+        int index = currentPosition;
+        while (payload[currentPosition++] != 0)
             ;
         return new String(payload, index, currentPosition - index - 1);
     }

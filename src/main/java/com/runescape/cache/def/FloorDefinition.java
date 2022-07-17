@@ -1,7 +1,5 @@
 package com.runescape.cache.def;
 
-import java.nio.ByteBuffer;
-
 import com.runescape.cache.FileArchive;
 import com.runescape.io.Buffer;
 
@@ -15,41 +13,207 @@ public class FloorDefinition {
     public int anotherRgb;
     public int hue;
     public int saturation;
-    public int luminance;
-    public int anotherHue;
-    public int anotherSaturation;
-    public int anotherLuminance;
-    public int blendHue;
-    public int blendHueMultiplier;
-    public int hsl16;
+    public int textureResolution;
+    public boolean blockShadow;
+
+    public int hue2;
+    public int ambient;
+    public int hueDivisor;
+
 
     private FloorDefinition() {
         texture = -1;
         occlude = true;
+        textureResolution = 512;
+        anotherRgb = -1;
+        rgb = -1;
     }
 
     public static void init(FileArchive archive) {
         Buffer buffer = new Buffer(archive.readFile("flo.dat"));
         int underlayAmount = buffer.readShort();
-        System.out.println("Loaded: " + underlayAmount + " underlays");
+
+        System.out.println("Underlays Read -> " + underlayAmount);
         underlays = new FloorDefinition[underlayAmount];
-        for (int i = 0; i < underlayAmount; i++) {
-            if (underlays[i] == null) {
-                underlays[i] = new FloorDefinition();
+
+        for (int index = 0; index != underlayAmount; ++index) {
+            if (underlays[index] == null) {
+                underlays[index] = new FloorDefinition();
             }
-            underlays[i].readValuesUnderlay(buffer);
+            underlays[index].decodeUnderlay(buffer);
+
         }
 
-        ByteBuffer buffer1 = ByteBuffer.wrap(archive.readFile("flo2.dat"));
-        int overlayAmount = buffer1.getShort();
-        System.out.println("Loaded: " + overlayAmount + " overlays");
+        Buffer bufferOverlay = new Buffer(archive.readFile("flo2.dat"));
+        int overlayAmount = bufferOverlay.readShort();
+        System.out.println("Overlays Read -> " + overlayAmount);
         overlays = new FloorDefinition[overlayAmount];
-        for (int i = 0; i < overlayAmount; i++) {
-            if (overlays[i] == null) {
-                overlays[i] = new FloorDefinition();
+        for (int index = 0; index < overlayAmount; index++) {
+            if (overlays[index] == null) {
+                overlays[index] = new FloorDefinition();
             }
-            overlays[i].readValuesOverlay(buffer1);
+            overlays[index].decodeOverlay(bufferOverlay);
         }
+    }
+
+    private void decodeUnderlay(Buffer buffer) {
+        do {
+            int opcode = buffer.readUnsignedByte();
+            if (opcode == 0)
+                return;
+            else if (opcode == 1) {
+                rgb = rgbToHsl(buffer.readTriByte());
+            } else if (opcode == 2) {
+                texture = buffer.readUShort();
+                if (texture == Integer.MAX_VALUE) {
+                    texture = -1;
+                }
+                if (texture == 594)
+                {
+                    texture = 1;
+                    rgb = rgbToHsl(0x5d7397);
+                }
+                else if (texture == 512)
+                {
+                    texture = 505;
+                    rgb = rgbToHsl(0x897b5f);
+                }
+            } else if (opcode == 3) {
+                textureResolution = buffer.readUShort();
+            } else if (opcode == 4) {
+                blockShadow = false;
+            } else if (opcode == 5) {
+                occlude = false;
+            } else {
+                System.out.println("Error unrecognised underlay code: " + opcode);
+            }
+        } while (true);
+    }
+
+    private void decodeOverlay(Buffer buffer) {
+        for (; ; ) {
+            int opcode = buffer.readUnsignedByte();
+            if (opcode == 0) {
+                break;
+            } else if (opcode == 1) {
+                rgb = rgbToHsl(buffer.readTriByte());
+            } else if (opcode == 2) {
+                texture = buffer.readShort();
+                if (texture == Integer.MAX_VALUE) {
+                    texture = -1;
+                }
+            } else if (opcode == 3) {
+                texture = buffer.readShort();
+            } else if (opcode == 5) {
+                occlude = false;
+            } else if (opcode == 7) {
+                anotherRgb = rgbToHsl(buffer.readTriByte());
+            } else if (opcode == 9) {
+                textureResolution = buffer.readShort();
+            } else if (opcode == 10) {
+                boolean aBoolean3638 = false;
+            } else if (opcode == 11) {
+                int anInt3633 = buffer.readUnsignedByte();
+            } else if (opcode == 12) {
+                boolean aBoolean3643 = true;
+            } else if (opcode == 13) {
+                int anInt3646 = buffer.readTriByte();
+            } else if (opcode == 14) {
+                int int_14 = buffer.readShort();
+            } else if (opcode == 16) {
+                int anInt3641 = buffer.readUnsignedByte();
+            } else {
+                System.out.println("Error unrecognised overlay code: " + opcode);
+            }
+        }
+    }
+
+    private int rgbToHsl(int color)
+    {
+        return color != 0xff00ff ? convertToHSL(color) : -1;
+    }
+
+    private int convertToHSL(int i)
+    {
+        double d = (double) (i >> 16 & 0xff) / 256D;
+        double d1 = (double) (i >> 8 & 0xff) / 256D;
+        double d2 = (double) (i & 0xff) / 256D;
+
+        double d3 = d;
+        if (d1 < d3)
+            d3 = d1;
+
+        if (d2 < d3)
+            d3 = d2;
+
+        double d4 = d;
+        if (d1 > d4)
+            d4 = d1;
+
+        if (d2 > d4)
+            d4 = d2;
+
+        double d5 = 0.0D;
+        double d6 = 0.0D;
+        double d7 = (d3 + d4) / 2D;
+        if (d3 != d4)
+        {
+            if (d7 < 0.5D)
+                d6 = (d4 - d3) / (d4 + d3);
+
+            if (d7 >= 0.5D)
+                d6 = (d4 - d3) / (2D - d4 - d3);
+
+            if (d == d4)
+                d5 = (d1 - d2) / (d4 - d3);
+            else if (d1 == d4)
+                d5 = 2D + (d2 - d) / (d4 - d3);
+            else if (d2 == d4)
+                d5 = 4D + (d - d1) / (d4 - d3);
+
+        }
+        d5 /= 6D;
+        hue2 = (int) (d5 * 256D);
+        saturation = (int) (d6 * 256D);
+        ambient = (int) (d7 * 256D);
+        if (saturation < 0)
+            saturation = 0;
+        else if (saturation > 255)
+            saturation = 255;
+
+        if (ambient < 0)
+            ambient = 0;
+        else if (ambient > 255)
+            ambient = 255;
+
+        if (d7 > 0.5D)
+            hueDivisor = (int) ((1.0D - d7) * d6 * 512D);
+        else
+            hueDivisor = (int) (d7 * d6 * 512D);
+
+        if (hueDivisor < 1)
+            hueDivisor = 1;
+
+        hue = (int) (d5 * (double) hueDivisor);
+        int k = hue2;
+        if (k < 0)
+            k = 0;
+        else if (k > 255)
+            k = 255;
+
+        int l = saturation;
+        if (l < 0)
+            l = 0;
+        else if (l > 255)
+            l = 255;
+
+        int i1 = ambient;
+        if (i1 < 0)
+            i1 = 0;
+        else if (i1 > 255)
+            i1 = 255;
+
+        return hsl24to16(k, l, i1);
     }
 
     private final static int hsl24to16(int h, int s, int l) {
@@ -68,147 +232,5 @@ public class FloorDefinition {
         return (h / 4 << 10) + (s / 32 << 7) + l / 2;
     }
 
-    private void readValuesUnderlay(Buffer buffer) {
-        do {
-            int opcode = buffer.readUnsignedByte();
-            if (opcode == 0)
-                return;
-            else if (opcode == 1) {
-                rgb = buffer.readTriByte();
-                rgbToHsl(rgb);
-            } else if (opcode == 2)
-                texture = buffer.readUnsignedByte();
-            else if (opcode == 3) {
-            } else if (opcode == 5)
-                occlude = false;
-            else if (opcode == 6)
-                buffer.readString();
-            else if (opcode == 7) {
-                int j = hue;
-                int k = saturation;
-                int l = luminance;
-                int i1 = blendHue;
-                int j1 = buffer.readTriByte();
-                rgbToHsl(j1);
-                hue = j;
-                saturation = k;
-                luminance = l;
-                blendHue = i1;
-                blendHueMultiplier = i1;
-            } else {
-                System.out.println("Error unrecognised underlay code: " + opcode);
-            }
-        } while (true);
-    }
 
-    private void readValuesOverlay(ByteBuffer buffer) {
-        for (; ; ) {
-            int opcode = buffer.get();
-            if (opcode == 0) {
-                break;
-            } else if (opcode == 1) {
-                rgb = ((buffer.get() & 0xff) << 16) + ((buffer.get() & 0xff) << 8) + (buffer.get() & 0xff);
-                rgbToHsl(rgb);
-            } else if (opcode == 2) {
-                texture = buffer.get() & 0xff;
-            } else if (opcode == 3) {
-                texture = buffer.getShort() & 0xffff;
-                if (texture == 65535) {
-                    texture = -1;
-                }
-            } else if (opcode == 4) {
-
-            } else if (opcode == 5) {
-                occlude = false;
-            } else if (opcode == 6) {
-
-            } else if (opcode == 7) {
-                anotherRgb = ((buffer.get() & 0xff) << 16) + ((buffer.get() & 0xff) << 8) + (buffer.get() & 0xff);
-            } else if (opcode == 8) {
-
-            } else if (opcode == 9) {
-                int int_9 = buffer.getShort() & 0xffff;
-            } else if (opcode == 10) {
-                boolean boolean_10 = false;
-            } else if (opcode == 11) {
-                int int_11 = buffer.get() & 0xff;
-            } else if (opcode == 12) {
-                boolean boolean_12 = true;
-            } else if (opcode == 13) {
-                int int_13 = ((buffer.get() & 0xff) << 16) + ((buffer.get() & 0xff) << 8) + (buffer.get() & 0xff);
-            } else if (opcode == 14) {
-                int int_14 = buffer.get() & 0xff;
-            } else if (opcode == 15) {
-                int int_15 = buffer.getShort() & 0xffff;
-                if (int_15 == 65535) {
-                    int_15 = -1;
-                }
-            } else if (opcode == 16) {
-                int int_16 = buffer.get() & 0xff;
-            } else {
-                System.out.println("Error unrecognised overlay code: " + opcode);
-            }
-        }
-    }
-    private void rgbToHsl(int rgb) {
-        double r = (rgb >> 16 & 0xff) / 256.0;
-        double g = (rgb >> 8 & 0xff) / 256.0;
-        double b = (rgb & 0xff) / 256.0;
-        double min = r;
-        if (g < min) {
-            min = g;
-        }
-        if (b < min) {
-            min = b;
-        }
-        double max = r;
-        if (g > max) {
-            max = g;
-        }
-        if (b > max) {
-            max = b;
-        }
-        double h = 0.0;
-        double s = 0.0;
-        double l = (min + max) / 2.0;
-        if (min != max) {
-            if (l < 0.5) {
-                s = (max - min) / (max + min);
-            }
-            if (l >= 0.5) {
-                s = (max - min) / (2.0 - max - min);
-            }
-            if (r == max) {
-                h = (g - b) / (max - min);
-            } else if (g == max) {
-                h = 2.0 + (b - r) / (max - min);
-            } else if (b == max) {
-                h = 4.0 + (r - g) / (max - min);
-            }
-        }
-        h /= 6.0;
-        hue = (int) (h * 256.0);
-        saturation = (int) (s * 256.0);
-        luminance = (int) (l * 256.0);
-        if (saturation < 0) {
-            saturation = 0;
-        } else if (saturation > 255) {
-            saturation = 255;
-        }
-        if (luminance < 0) {
-            luminance = 0;
-        } else if (luminance > 255) {
-            luminance = 255;
-        }
-        if (l > 0.5) {
-            blendHueMultiplier = (int) ((1.0 - l) * s * 512.0);
-        } else {
-            blendHueMultiplier = (int) (l * s * 512.0);
-        }
-        if (blendHueMultiplier < 1) {
-            blendHueMultiplier = 1;
-        }
-        blendHue = (int) (h * blendHueMultiplier);
-        hsl16 = hsl24to16(hue, saturation, luminance);
-    }
 }

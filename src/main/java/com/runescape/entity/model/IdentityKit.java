@@ -7,39 +7,32 @@ public final class IdentityKit {
 
     public static int length;
     public static IdentityKit kits[];
-    private final int[] originalColors;
-    private final int[] replacementColors;
-    private final int[] headModels = {-1, -1, -1, -1, -1};
+    private short[] srcColors;
+    private short[] dstColors;
+    private short[] aShortArray3356;
+    private short[] aShortArray3353;
+    private int[] headModels = {-1, -1, -1, -1, -1};
     public int bodyPartId;
     public boolean validStyle;
     private int[] bodyModels;
 
     private IdentityKit() {
         bodyPartId = -1;
-        originalColors = new int[6];
-        replacementColors = new int[6];
+
     }
 
     public static void init(FileArchive archive) {
         Buffer buffer = new Buffer(archive.readFile("idk.dat"));
 
         length = buffer.readUShort();
-        if (kits == null) {
-            kits = new IdentityKit[length];
-        }
+        kits = new IdentityKit[length];
 
         for (int id = 0; id < length; id++) {
 
             if (kits[id] == null) {
                 kits[id] = new IdentityKit();
             }
-
-            IdentityKit kit = kits[id];
-
-            kit.decode(buffer);
-            kit.originalColors[0] = 55232;
-            kit.replacementColors[0] = 6798;
-
+            kits[id].decode(buffer);
         }
 
     }
@@ -62,12 +55,28 @@ public final class IdentityKit {
                 }
             } else if (opcode == 3) {
                 validStyle = true;
-            } else if (opcode >= 40 && opcode < 50) {
-                originalColors[opcode - 40] = buffer.readUShort();
-            } else if (opcode >= 50 && opcode < 60) {
-                replacementColors[opcode - 50] = buffer.readUShort();
-            } else if (opcode >= 60 && opcode < 70) {
-                headModels[opcode - 60] = buffer.readUShort();
+            } else if (opcode == 40) {
+                 int count = buffer.readUnsignedByte();
+                 srcColors = new short[count];
+                 dstColors = new short[count];
+                 for (int i = 0; i != count; ++i) {
+                     srcColors[i] = (short) buffer.readUShort();
+                     dstColors[i] = (short) buffer.readUShort();
+                 }
+            } else if (opcode == 41) {
+                int count = buffer.readUnsignedByte();
+                aShortArray3356 = new short[count];
+                aShortArray3353 = new short[count];
+                for (int i = 0; i != count; ++i) {
+                    aShortArray3356[i] = (short) buffer.readUShort();
+                    aShortArray3353[i] = (short) buffer.readUShort();
+                }
+            } else if (opcode == 60) {
+                int count = buffer.readUnsignedByte();
+                headModels = new int[count];
+                for (int i = 0; i != count; ++i) {
+                    headModels[i] = buffer.readUShort();
+                }
             } else {
                 System.out.println("Error unrecognised config code: " + opcode);
             }
@@ -101,12 +110,7 @@ public final class IdentityKit {
         } else {
             model = new Model(models.length, models,true);
         }
-        for (int part = 0; part < 6; part++) {
-            if (originalColors[part] == 0) {
-                break;
-            }
-            model.recolor(originalColors[part], replacementColors[part]);
-        }
+
         return model;
     }
 
@@ -130,12 +134,7 @@ public final class IdentityKit {
         }
 
         Model model = new Model(count, models,true);
-        for (int part = 0; part < 6; part++) {
-            if (originalColors[part] == 0) {
-                break;
-            }
-            model.recolor(originalColors[part], replacementColors[part]);
-        }
+
         return model;
     }
 }

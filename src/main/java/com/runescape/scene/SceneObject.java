@@ -43,7 +43,7 @@ public final class SceneObject extends Renderable {
         }
         ObjectDefinition objectDef = ObjectDefinition.lookup(anInt1610);
         anInt1601 = objectDef.varbitID;
-        anInt1602 = objectDef.varpID;
+        anInt1602 = objectDef.varbitId;
         anIntArray1600 = objectDef.configs;
     }
 

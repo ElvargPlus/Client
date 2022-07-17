@@ -7,11 +7,7 @@ import com.runescape.draw.Rasterizer3D;
 public class AnimatedTextures {
 
     public static void render(int loaded) {
-        for(AnimatedTextureStore data : AnimatedTextureStore.values()) {
-            if(Rasterizer3D.textureLastUsed[data.getId()] >= loaded) {
-                //animate(data.getId(), data.getSpeed());
-            }
-        }
+
     }
 
     private static void animate(int id, int speed) {
@@ -25,7 +21,7 @@ public class AnimatedTextures {
         }
         image.palettePixels = target;
         Client.instance.aByteArray912 = raster;
-        Rasterizer3D.requestTextureUpdate(id);
+        Rasterizer3D.resetTexture(id);
     }
 
 }

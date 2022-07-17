@@ -10,6 +10,8 @@ import com.runescape.cache.anim.Graphic;
 import com.runescape.cache.config.VariableBits;
 import com.runescape.cache.config.VariablePlayer;
 import com.runescape.cache.def.*;
+import com.runescape.cache.def.texture.TextureDefinition;
+import com.runescape.cache.def.texture.TextureLoader;
 import com.runescape.cache.graphics.RSFont;
 import com.runescape.cache.graphics.*;
 import com.runescape.cache.graphics.sprite.Sprite;
@@ -50,7 +52,6 @@ import com.runescape.scene.object.SpawnedObject;
 import com.runescape.scene.object.WallDecoration;
 import com.runescape.scene.object.WallObject;
 import com.runescape.sign.SignLink;
-import com.runescape.sound.SoundConstants;
 import com.runescape.sound.SoundPlayer;
 import com.runescape.sound.Track;
 import com.runescape.util.*;
@@ -193,7 +194,7 @@ public class Client extends GameApplet implements RSClient {
     public static int screenAreaWidth = 512;
     public static int screenAreaHeight = 334;
     public static int cameraZoom = 600;
-    public static double brightnessState = 0.8;
+    public static float brightnessState = 0.8F;
     public static boolean showChatComponents = true;
     public static boolean showTabComponents = true;
     public static boolean changeChatArea = false;
@@ -779,7 +780,7 @@ public class Client extends GameApplet implements RSClient {
         lastKnownPlane = -1;
         hitMarks = new Sprite[20];
         characterDesignColours = new int[5];
-        indices = new FileStore[5];
+        indices = new FileStore[6];
         aBoolean994 = false;
         amountOrNameInput = "";
         projectiles = new Deque();
@@ -1358,8 +1359,8 @@ public class Client extends GameApplet implements RSClient {
             Configuration.mergeExpDrops = stream.readBoolean();
             Configuration.hpAboveHeads = stream.readBoolean();
 
-            brightnessState = stream.readDouble();
-            Rasterizer3D.setBrightness(brightnessState);
+            brightnessState = stream.readFloat();
+            //Rasterizer3D.calculatePalette(brightnessState);
 
 			/*for(int i = 0; i < Keybinding.KEYBINDINGS.length; i++) {
                 Keybinding.KEYBINDINGS[i] = stream.readByte();
@@ -2201,7 +2202,6 @@ public class Client extends GameApplet implements RSClient {
             lastKnownPlane = -1;
             incompleteAnimables.clear();
             projectiles.clear();
-            Rasterizer3D.clearTextureCache();
             unlinkCaches();
             scene.initToNull();
             System.gc();
@@ -2347,7 +2347,7 @@ public class Client extends GameApplet implements RSClient {
 
         }
         System.gc();
-        Rasterizer3D.initiateRequestBuffers();
+        Rasterizer3D.resetTextures();
         resourceProvider.clearExtras();
 
         int startRegionX = (currentRegionX - 6) / 8 - 1;
@@ -2425,13 +2425,7 @@ public class Client extends GameApplet implements RSClient {
                 long i3 = scene.getGroundDecorationUid(plane, x, y);
                 if (i3 != 0) {
                     int id = ObjectKeyUtil.getObjectId(i3);
-
-                    int function = ObjectDefinition.lookup(id).minimapFunction;
-
-                    if (function >= 0) {
-
-
-                    }
+                    
                 }
             }
 
@@ -3344,22 +3338,22 @@ public class Client extends GameApplet implements RSClient {
         if (parameter == 1) {
 
             if (state == 1) {
-                Rasterizer3D.setBrightness(0.9);
+                Rasterizer3D.calculatePalette(0.9F);
                 savePlayerData();
             }
 
             if (state == 2) {
-                Rasterizer3D.setBrightness(0.8);
+                Rasterizer3D.calculatePalette(0.8F);
                 savePlayerData();
             }
 
             if (state == 3) {
-                Rasterizer3D.setBrightness(0.7);
+                Rasterizer3D.calculatePalette(0.7F);
                 savePlayerData();
             }
 
             if (state == 4) {
-                Rasterizer3D.setBrightness(0.6);
+                Rasterizer3D.calculatePalette(0.6F);
                 savePlayerData();
             }
 
@@ -4271,7 +4265,7 @@ public class Client extends GameApplet implements RSClient {
 
         drawLoadingText(20, "Starting up");
         if (SignLink.cache_dat != null) {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
                 indices[i] = new FileStore(SignLink.cache_dat, SignLink.indices[i], i + 1);
         }
         try {
@@ -4319,6 +4313,7 @@ public class Client extends GameApplet implements RSClient {
             resourceProvider = new ResourceProvider();
             resourceProvider.initialize(streamLoader_6, this);
             Model.init();
+            TextureLoader.init();
             drawLoadingText(80, "Unpacking media");
 
             if(Configuration.repackIndexOne) {
@@ -4399,13 +4394,14 @@ public class Client extends GameApplet implements RSClient {
             }
 
             drawLoadingText(83, "Unpacking textures");
-            Rasterizer3D.loadTextures(textureArchive);
-            Rasterizer3D.setBrightness(0.80000000000000004D);
-            Rasterizer3D.initiateRequestBuffers();
+            Rasterizer3D.calculatePalette(0.8F);
+            Rasterizer3D.resetTextures();
             drawLoadingText(86, "Unpacking config");
             Animation.init(configArchive);
             ObjectDefinition.init(configArchive);
             FloorDefinition.init(configArchive);
+            TextureDefinition.unpackConfig(configArchive);
+            NpcAnimationDefinition.init(configArchive);
             NpcDefinition.init(configArchive);
             IdentityKit.init(configArchive);
             Graphic.init(configArchive);
@@ -7176,10 +7172,13 @@ public class Client extends GameApplet implements RSClient {
         }
         socketStream = null;
         stopMidi();
+        NpcAnimationDefinition.clear();
         if (mouseDetection != null)
             mouseDetection.running = false;
         mouseDetection = null;
         resourceProvider.disable();
+        TextureDefinition.clear();
+        TextureLoader.clear();
         resourceProvider = null;
         chatBuffer = null;
         loginBuffer = null;
@@ -15185,7 +15184,7 @@ public class Client extends GameApplet implements RSClient {
                         yCameraCurve = 383;
                 }
             }
-        int k2 = Rasterizer3D.lastTextureRetrievalCount;
+        int k2 = Rasterizer3D.textureGetCount;
         Model.obj_exists = true;
         Model.obj_loaded = 0;
         Model.anInt1685 = super.mouseX - (frameMode == ScreenMode.FIXED ? 4 : 0);
@@ -15638,6 +15637,7 @@ public class Client extends GameApplet implements RSClient {
                     for (int i = 0; i < terrainData.length; i++) {
                         if (terrainIndices[i] == resource.ID) {
                             terrainData[i] = resource.buffer;
+
                             if (resource.buffer == null)
                                 terrainIndices[i] = -1;
                             break;
@@ -15649,7 +15649,9 @@ public class Client extends GameApplet implements RSClient {
                             objectIndices[i] = -1;
                         break;
                     }
-
+                    if (resource.dataType == 4) {
+                        TextureLoader.load(resource.ID, resource.buffer);
+                    }
                 }
             } while (resource.dataType != 93
                     || !resourceProvider.landscapePresent(resource.ID));

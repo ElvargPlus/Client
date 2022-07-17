@@ -15,7 +15,7 @@ public final class MapRegion {
     private final int[] saturations;
     private final int[] luminances;
     private final int[] chromas;
-    private final int[] anIntArray128;
+    private final int[] blendedDirection;
     private final int[][][] tileHeights;
     public byte[][][] overlays;
     public static int anInt131;
@@ -56,7 +56,7 @@ public final class MapRegion {
         saturations = new int[regionSizeY];
         luminances = new int[regionSizeY];
         chromas = new int[regionSizeY];
-        anIntArray128 = new int[regionSizeY];
+        blendedDirection = new int[regionSizeY];
     }
 
     private static int calculateNoise(int x, int y) {
@@ -112,7 +112,7 @@ public final class MapRegion {
                     saturations[k5] = 0;
                     luminances[k5] = 0;
                     chromas[k5] = 0;
-                    anIntArray128[k5] = 0;
+                    blendedDirection[k5] = 0;
                 }
 
                 for (int l6 = -5; l6 < regionSizeX + 5; l6++) {
@@ -125,11 +125,11 @@ public final class MapRegion {
                                     l12 = FloorDefinition.underlays.length;
                                 }
                                 FloorDefinition flo = FloorDefinition.underlays[l12 - 1];
-                                hues[i8] += flo.blendHue;
+                                hues[i8] += flo.hue;
                                 saturations[i8] += flo.saturation;
-                                luminances[i8] += flo.luminance;
-                                chromas[i8] += flo.blendHueMultiplier;
-                                anIntArray128[i8]++;
+                                luminances[i8] += flo.ambient;
+                                chromas[i8] += flo.hueDivisor;
+                                blendedDirection[i8]++;
                             }
                         }
                         int i13 = l6 - 5;
@@ -137,11 +137,11 @@ public final class MapRegion {
                             int i14 = underlays[z][i13][i8] & 0xff;
                             if (i14 > 0) {
                                 FloorDefinition flo_1 = FloorDefinition.underlays[i14 - 1];
-                                hues[i8] -= flo_1.blendHue;
+                                hues[i8] -= flo_1.hue;
                                 saturations[i8] -= flo_1.saturation;
-                                luminances[i8] -= flo_1.luminance;
-                                chromas[i8] -= flo_1.blendHueMultiplier;
-                                anIntArray128[i8]--;
+                                luminances[i8] -= flo_1.ambient;
+                                chromas[i8] -= flo_1.hueDivisor;
+                                blendedDirection[i8]--;
                             }
                         }
                     }
@@ -159,7 +159,7 @@ public final class MapRegion {
                                 j13 += saturations[j18];
                                 j14 += luminances[j18];
                                 k15 += chromas[j18];
-                                k16 += anIntArray128[j18];
+                                k16 += blendedDirection[j18];
                             }
                             int k18 = k17 - 5;
                             if (k18 >= 0 && k18 < regionSizeY) {
@@ -167,7 +167,7 @@ public final class MapRegion {
                                 j13 -= saturations[k18];
                                 j14 -= luminances[k18];
                                 k15 -= chromas[k18];
-                                k16 -= anIntArray128[k18];
+                                k16 -= blendedDirection[k18];
                             }
                             if (k17 >= 1 && k17 < regionSizeY - 1 && (!lowMem || (tileFlags[0][l6][k17] & 2) != 0 || (tileFlags[z][l6][k17] & 0x10) == 0 && getCollisionPlane(k17, z, l6) == anInt131)) {
                                 if (z < maximumPlane)
@@ -210,46 +210,57 @@ public final class MapRegion {
                                     int mapLight = Client.instance.isHdMinimapEnabled() ? 50 : 96;
                                     int i22 = 0;
                                     if (j21 != -1)
-                                        i22 = Rasterizer3D.hslToRgb[method187(k21, mapLight)];
+                                        i22 = Rasterizer3D.hslToRgb[getRGB(k21, mapLight)];
                                     if (i19 == 0) {
-                                        scene.addTile(z, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
+                                        scene.addTile(z, l6, k17, 0, 0, -1, j19, k19, l19, i20, getRGB(j21, j20), getRGB(j21, k20), getRGB(j21, l20), getRGB(j21, i21), 0, 0, 0, 0, i22, 0);
                                     } else {
 
                                         int k22 = overlayTypes[z][l6][k17] + 1;
                                         byte byte4 = overlayOrientations[z][l6][k17];
-                                        if (i19 - 1 > FloorDefinition.overlays.length) {
-                                            i19 = FloorDefinition.overlays.length;
+                                        if (i19 - 1 >= FloorDefinition.overlays.length) {
+                                            i19 = 1;
                                         }
-                                        FloorDefinition overlay_flo = FloorDefinition.overlays[i19 - 1];
-                                        int textureId = overlay_flo.texture;
-                                        int j23;
-                                        int minimapColor;
+                                        FloorDefinition floorOverlay = FloorDefinition.overlays[i19 - 1];
+                                        int overlayTexture = floorOverlay.texture;
+                                        int overlayHSL;
+                                        int overlayRGB;
+                                        int overlayColor = 0;
 
-                                        if (textureId > 50) {
-                                            textureId = -1;
+                                        if (floorOverlay.anotherRgb != -1)
+                                            overlayColor = (Rasterizer3D.hslToRgb[floorOverlay.anotherRgb] != 1) ? Rasterizer3D.hslToRgb[floorOverlay.anotherRgb]
+                                                    : 0;
+
+                                        int color = -1;
+                                        if (overlayTexture >= 0)
+                                        {
+                                            overlayHSL = -1;
+                                            if (floorOverlay.rgb != 0xff00ff)
+                                            {
+                                                overlayHSL = floorOverlay.rgb;
+                                                overlayRGB = Rasterizer3D.hslToRgb[overlayHSL];
+                                                color = getRGB(floorOverlay.rgb, 96);
+                                            }
+                                            else
+                                            {
+                                                overlayRGB = 0;
+                                                overlayHSL = -2;
+                                                color = -1;
+                                            }
                                         }
-                                        if (textureId >= 0) {
-                                            minimapColor = Rasterizer3D.getOverallColour(textureId);
-                                            j23 = -1;
-                                        } else if (overlay_flo.rgb == 0xff00ff) {
-                                            minimapColor = 0;
-                                            j23 = -2;
-                                            textureId = -1;
-                                        } else if(overlay_flo.rgb == 0x333333) {
-                                            minimapColor = Rasterizer3D.hslToRgb[checkedLight(overlay_flo.hsl16, mapLight)];
-                                            j23 = -2;
-                                            textureId = -1;
-                                        } else {
-                                            j23 = encode(overlay_flo.hue, overlay_flo.saturation, overlay_flo.luminance);
-                                            minimapColor = Rasterizer3D.hslToRgb[checkedLight(overlay_flo.hsl16, mapLight)];
+                                        else if (floorOverlay.rgb == -1) {
+                                            overlayRGB = overlayColor;
+                                            overlayHSL = -2;
+                                            overlayTexture = -1;
+                                        }
+                                        else
+                                        {
+                                            color = getRGB(floorOverlay.rgb, 96);
+                                            overlayHSL = floorOverlay.rgb;
+                                            overlayRGB = Rasterizer3D.hslToRgb[color];
                                         }
 
-                                        if (minimapColor == 0x000000 && overlay_flo.anotherRgb != -1) {
-                                            int newMinimapColor = encode(overlay_flo.anotherHue, overlay_flo.anotherSaturation, overlay_flo.anotherLuminance);
-                                            minimapColor = Rasterizer3D.hslToRgb[checkedLight(newMinimapColor, mapLight)];
-                                        }
 
-                                        scene.addTile(z, l6, k17, k22, byte4, textureId, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), checkedLight(j23, j20), checkedLight(j23, k20), checkedLight(j23, l20), checkedLight(j23, i21), i22, minimapColor);
+                                        scene.addTile(z, l6, k17, k22, byte4, overlayTexture, j19, k19, l19, i20, getRGB(j21, j20), getRGB(j21, k20), getRGB(j21, l20), getRGB(j21, i21), getRGB(overlayHSL, j20), getRGB(overlayHSL, k20), getRGB(overlayHSL, l20), getRGB(overlayHSL, i21), i22, overlayRGB);
                                     }
                                 }
                             }
@@ -986,7 +997,7 @@ public final class MapRegion {
         }
     }
 
-    private static int method187(int hslBitmap, int lightIntensity) {
+    private static int getRGB(int hslBitmap, int lightIntensity) {
         if (hslBitmap == -1) {
             return 12345678;
         } else {

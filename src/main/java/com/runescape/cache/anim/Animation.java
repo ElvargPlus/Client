@@ -15,7 +15,7 @@ public final class Animation {
     public int[] durations;
     public int loopOffset;
     public int interleaveOrder[];
-    public boolean stretches;
+    public boolean allowsRotation;
     public int forcedPriority;
     public int playerOffhand;
     public int playerMainhand;
@@ -26,7 +26,7 @@ public final class Animation {
 
     private Animation() {
         loopOffset = -1;
-        stretches = false;
+        allowsRotation = false;
         forcedPriority = 5;
         playerOffhand = -1; //Removes shield
         playerMainhand = -1; //Removes weapon
@@ -49,7 +49,7 @@ public final class Animation {
 
         }
 
-        System.out.println("Loaded: " + length + " animations");
+        System.out.println("Animations Read -> " + length);
     }
 
     public int duration(int i) {
@@ -98,7 +98,7 @@ public final class Animation {
                 }
                 interleaveOrder[len] = 9999999;
             } else if (opcode == 4) {
-                stretches = true;
+                allowsRotation = true;
             } else if (opcode == 5) {
                 forcedPriority = buffer.readUnsignedByte();
             } else if (opcode == 6) {

@@ -2139,9 +2139,9 @@ public final class SceneGraph implements RSScene {
                     Rasterizer3D.drawShadedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.getCenterColor(), simpleTile.getEastColor(), simpleTile.getNorthColor());
             } else if (!lowMem) {
                 if (simpleTile.isFlat())
-                    Rasterizer3D.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.getCenterColor(), simpleTile.getEastColor(), simpleTile.getNorthColor(), i2, i3, l1, l3, i4, k4, k2, j2, j3, simpleTile.getTexture());
+                    Rasterizer3D.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.getCenterColor(), simpleTile.getEastColor(), simpleTile.getNorthColor(), i2, i3, l1, l3, i4, k4, k2, j2, j3, simpleTile.getTexture(),0,false);
                 else
-                    Rasterizer3D.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.getCenterColor(), simpleTile.getEastColor(), simpleTile.getNorthColor(), l2, l1, i3, j4, k4, i4, k3, j3, j2, simpleTile.getTexture());
+                    Rasterizer3D.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, simpleTile.getCenterColor(), simpleTile.getEastColor(), simpleTile.getNorthColor(), l2, l1, i3, j4, k4, i4, k3, j3, j2, simpleTile.getTexture(),0,false);
             } else {
                 int textureColor = TEXTURE_COLORS[simpleTile.getTexture()];
                 Rasterizer3D.drawShadedTriangle(j6, l6, l5, i6, k6, k5, light(textureColor, simpleTile.getCenterColor()), light(textureColor, simpleTile.getEastColor()), light(textureColor, simpleTile.getNorthColor()));
@@ -2165,7 +2165,7 @@ public final class SceneGraph implements RSScene {
             } else {
                 if (!lowMem) {
                     Rasterizer3D.drawTexturedTriangle(j5, l5, l6, i5, k5, k6, simpleTile.getNorthEastColor(), simpleTile.getNorthColor(),
-                            simpleTile.getEastColor(), i2, i3, l1, l3, i4, k4, k2, j2, j3, simpleTile.getTexture());
+                            simpleTile.getEastColor(), i2, i3, l1, l3, i4, k4, k2, j2, j3, simpleTile.getTexture(),0,false);
                     return;
                 }
                 int j7 = TEXTURE_COLORS[simpleTile.getTexture()];
@@ -2339,13 +2339,13 @@ public final class SceneGraph implements RSScene {
                                 tile.triangleHslB[j2], tile.triangleHslC[j2], ShapedTile.anIntArray690[0],
                                 ShapedTile.anIntArray690[1], ShapedTile.anIntArray690[3], ShapedTile.anIntArray691[0],
                                 ShapedTile.anIntArray691[1], ShapedTile.anIntArray691[3], ShapedTile.anIntArray692[0],
-                                ShapedTile.anIntArray692[1], ShapedTile.anIntArray692[3], tile.triangleTexture[j2]);
+                                ShapedTile.anIntArray692[1], ShapedTile.anIntArray692[3], tile.triangleTexture[j2],0,false);
                     else
                         Rasterizer3D.drawTexturedTriangle(l4, i5, j5, i4, j4, k4, tile.triangleHslA[j2],
                                 tile.triangleHslB[j2], tile.triangleHslC[j2], ShapedTile.anIntArray690[l2],
                                 ShapedTile.anIntArray690[j3], ShapedTile.anIntArray690[l3], ShapedTile.anIntArray691[l2],
                                 ShapedTile.anIntArray691[j3], ShapedTile.anIntArray691[l3], ShapedTile.anIntArray692[l2],
-                                ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3], tile.triangleTexture[j2]);
+                                ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3], tile.triangleTexture[j2],0,false);
                 } else {
                     int k5 = TEXTURE_COLORS[tile.triangleTexture[j2]];
                     Rasterizer3D.drawShadedTriangle(l4, i5, j5, i4, j4, k4, light(k5, tile.triangleHslA[j2]),
