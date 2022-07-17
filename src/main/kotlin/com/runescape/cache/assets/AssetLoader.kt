@@ -58,6 +58,8 @@ object AssetLoader {
 
     fun getCache() = File(clientProperties.getProperty("cache") + "/Client/cache/")
 
+    fun getClientFolder() = File(clientProperties.getProperty("cache") + "/Client/")
+
     private fun openChooser() : Boolean {
         if(clientProperties.getProperty("cache") == null) {
             return true

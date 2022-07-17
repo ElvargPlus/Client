@@ -1,6 +1,7 @@
 package com.runescape.entity.model;
 
 import com.runescape.Client;
+import com.runescape.cache.CacheArchive;
 import com.runescape.cache.anim.Animation;
 import com.runescape.cache.anim.Frame;
 import com.runescape.cache.anim.FrameBase;
@@ -820,7 +821,7 @@ public class Model extends Renderable implements RSModel {
 
         ModelHeader mdl = aClass21Array1661[file];
         if (mdl == null) {
-            Client.instance.resourceProvider.provide(0,file);
+            Client.instance.resourceProvider.provide(CacheArchive.MODELS_STANDARD,file);
             return null;
         } else {
             return new Model(file);
@@ -833,7 +834,7 @@ public class Model extends Renderable implements RSModel {
 
         ModelHeader mdl = aClass21Array1661[file];
         if (mdl == null) {
-            Client.instance.resourceProvider.provide(0,file);
+            Client.instance.resourceProvider.provide(CacheArchive.MODELS_STANDARD,file);
             return false;
         } else {
             return true;

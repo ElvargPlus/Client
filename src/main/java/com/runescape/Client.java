@@ -1,9 +1,6 @@
 package com.runescape;
 
-import com.runescape.cache.FileArchive;
-import com.runescape.cache.FileStore;
-import com.runescape.cache.Resource;
-import com.runescape.cache.ResourceProvider;
+import com.runescape.cache.*;
 import com.runescape.cache.anim.Animation;
 import com.runescape.cache.anim.Frame;
 import com.runescape.cache.anim.Graphic;
@@ -2360,11 +2357,11 @@ public class Client extends GameApplet implements RSClient {
                         || regionY == endRegionY) {
                     int floorMapId = resourceProvider.resolve(0, regionY, regionX);
                     if (floorMapId != -1) {
-                        resourceProvider.loadExtra(floorMapId, 3);
+                        resourceProvider.loadExtra(CacheArchive.MAPS_STANDARD,floorMapId);
                     }
                     int objectMapId = resourceProvider.resolve(1, regionY, regionX);
                     if (objectMapId != -1) {
-                        resourceProvider.loadExtra(objectMapId, 3);
+                        resourceProvider.loadExtra(CacheArchive.MAPS_STANDARD,objectMapId);
                     }
                 }
             }
@@ -7172,6 +7169,7 @@ public class Client extends GameApplet implements RSClient {
         }
         socketStream = null;
         stopMidi();
+        ImageCache.clear();
         NpcAnimationDefinition.clear();
         if (mouseDetection != null)
             mouseDetection.running = false;
@@ -11428,7 +11426,7 @@ public class Client extends GameApplet implements RSClient {
             try {
 
                 if (Frame.animationlist[Graphic.cache[player.graphic].animationSequence.primaryFrames[0] >> 16].length == 0) {
-                    resourceProvider.provide(1, Graphic.cache[player.graphic].animationSequence.primaryFrames[0] >> 16);
+                    resourceProvider.provide(CacheArchive.ANIMATIONS_STANDARD, Graphic.cache[player.graphic].animationSequence.primaryFrames[0] >> 16);
                 }
 
             } catch (Exception e) {
@@ -14112,13 +14110,13 @@ public class Client extends GameApplet implements RSClient {
                             } else {
                                 int map = terrainIndices[regionCount] = resourceProvider.resolve(0, y, x);
                                 if (map != -1) {
-                                    resourceProvider.provide(3, map);
+                                    resourceProvider.provide(CacheArchive.MAPS_STANDARD, map);
                                 }
 
                                 int landscape = objectIndices[regionCount] = resourceProvider.resolve(1, y,
                                         x);
                                 if (landscape != -1) {
-                                    resourceProvider.provide(3, landscape);
+                                    resourceProvider.provide(CacheArchive.MAPS_STANDARD, landscape);
                                 }
 
                                 regionCount++;
@@ -14161,10 +14159,10 @@ public class Client extends GameApplet implements RSClient {
                         int l31 = region & 0xff;
                         int terrainMapId = terrainIndices[idx] = resourceProvider.resolve(0, l31, l30);
                         if (terrainMapId != -1)
-                            resourceProvider.provide(3, terrainMapId);
+                            resourceProvider.provide(CacheArchive.MAPS_STANDARD, terrainMapId);
                         int objectMapId = objectIndices[idx] = resourceProvider.resolve(1, l31, l30);
                         if (objectMapId != -1)
-                            resourceProvider.provide(3, objectMapId);
+                            resourceProvider.provide(CacheArchive.MAPS_STANDARD, objectMapId);
                     }
                 }
                 int dx = regionBaseX - previousAbsoluteX;
@@ -15615,25 +15613,25 @@ public class Client extends GameApplet implements RSClient {
         newSmallFont.drawCenteredString("(" + (x + 4) + ", " + (y + 4) + ")", x + 4, y - 1, 0xffff00, 0);
     }
     
-    private void processOnDemandQueue() {
+    public void processOnDemandQueue() {
         do {
             Resource resource;
             do {
                 resource = resourceProvider.next();
                 if (resource == null)
                     return;
-                if (resource.dataType == 0) {
+                if (resource.dataType == CacheArchive.MODELS_STANDARD) {
                     Model.method460(resource.buffer, resource.ID);
                     if (backDialogueId != -1)
                         updateChatbox = true;
                 }
-                if (resource.dataType == 1) {
+                if (resource.dataType == CacheArchive.ANIMATIONS_STANDARD) {
                     Frame.load(resource.ID, resource.buffer);
                 }
-                if (resource.dataType == 2 && resource.ID == nextSong
+                if (resource.dataType == CacheArchive.MUSIC_STANDARD && resource.ID == nextSong
                         && resource.buffer != null)
                     saveMidi(fadeMusic, resource.buffer);
-                if (resource.dataType == 3 && loadingStage == 1) {
+                if (resource.dataType == CacheArchive.MAPS_STANDARD && loadingStage == 1) {
                     for (int i = 0; i < terrainData.length; i++) {
                         if (terrainIndices[i] == resource.ID) {
                             terrainData[i] = resource.buffer;
@@ -15649,13 +15647,17 @@ public class Client extends GameApplet implements RSClient {
                             objectIndices[i] = -1;
                         break;
                     }
-                    if (resource.dataType == 4) {
+                    if (resource.dataType == CacheArchive.TEXTURES) {
                         TextureLoader.load(resource.ID, resource.buffer);
                     }
+                    if (resource.dataType == CacheArchive.SPRITES_RUNESCAPE) {
+                        ImageCache.setImage(new Sprite(resource.buffer,resource.ID), resource.ID);
+                        TextureLoader.load(resource.ID, resource.buffer);
+                    }
+
                 }
-            } while (resource.dataType != 93
-                    || !resourceProvider.landscapePresent(resource.ID));
-          //  MapRegion.passiveRequestGameObjectModels(new Buffer(resource.buffer), resourceProvider);
+            } while (!resourceProvider.landscapePresent(resource.ID));
+                //  MapRegion.passiveRequestGameObjectModels(new Buffer(resource.buffer), resourceProvider);
         } while (true);
     }
     

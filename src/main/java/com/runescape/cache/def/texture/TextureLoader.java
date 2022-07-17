@@ -2,6 +2,7 @@ package com.runescape.cache.def.texture;
 
 
 import com.runescape.Client;
+import com.runescape.cache.CacheArchive;
 import com.runescape.cache.ResourceProvider;
 import com.runescape.cache.def.texture.type.ARGBTexture;
 import com.runescape.cache.def.texture.type.AlphaPalettedTexture;
@@ -33,7 +34,7 @@ public class TextureLoader {
 			return textures[id];
 		}
 
-		Client.instance.resourceProvider.loadMandatory(4, id);
+		Client.instance.resourceProvider.loadMandatory(CacheArchive.TEXTURES, id);
 		return null;
 	}
 

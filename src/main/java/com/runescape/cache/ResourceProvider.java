@@ -106,14 +106,14 @@ public final class ResourceProvider implements Runnable {
                 int sector = ((payload[8] & 0xff) << 8) + (payload[9] & 0xff);
                 current = null;
                 for (Resource resource = (Resource) requested.reverseGetFirst(); resource != null; resource = (Resource) requested.reverseGetNext()) {
-                    if (resource.dataType == type && resource.ID == file)
+                    if (resource.dataType == CacheArchive.values()[type] && resource.ID == file)
                         current = resource;
                     if (current != null)
                         resource.loopCycle = 0;
                 }
 
                 if (current != null) {
-                    currentDownload = "Downloading " + forId(current.dataType + 1) + " " + current.ID + "";
+                    currentDownload = "Downloading " + forId(current.dataType.getIndex()) + " " + current.ID + "";
                     idleTime = 0;
                     if (length == 0) {
                         System.out.println("Rej: " + type + "," + file);
@@ -150,11 +150,8 @@ public final class ResourceProvider implements Runnable {
                     ;
                 if (remainingData + completedSize >= data.length && current != null) {
                     if (clientInstance.indices[0] != null)
-                        clientInstance.indices[current.dataType + 1].writeFile(data.length, data, current.ID);
-                    if (!current.incomplete && current.dataType == 3) {
-                        current.incomplete = true;
-                        current.dataType = 93;
-                    }
+                        clientInstance.indices[current.dataType.getIndex()].writeFile(data.length, data, current.ID);
+
                     if (current.incomplete)
                         synchronized (complete) {
                             complete.insertHead(current);
@@ -269,59 +266,8 @@ public final class ResourceProvider implements Runnable {
         return versions[index].length;
     }
 
-    private void request(Resource resource) {
- /*       try {
-
-            if (socket == null || !socket.isConnected()) {
-                socket = Client.instance.openSocket(JagGrabConstants.FILE_SERVER_PORT);
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
-            }
-
-            //Store opcode
-            payload[0] = JagGrabConstants.ONDEMAND_REQUEST_OPCODE;
-
-            //Store data type as byte
-            payload[1] = (byte) resource.dataType;
-
-            //Store file id as int
-            payload[2] = (byte) (resource.ID >> 24);
-            payload[3] = (byte) (resource.ID >> 16);
-            payload[4] = (byte) (resource.ID >> 8);
-            payload[5] = (byte) resource.ID;
-
-            //Write the buffer
-            outputStream.write(payload, 0, 6);
-
-            deadTime = 0;
-            errors = -10000;
-            return;
-
-        } catch (IOException ex) {
-            //ex.printStackTrace();
-        }
-        try {
-            socket.close();
-        } catch (Exception ex) {
-            //ex.printStackTrace();
-        }
-        socket = null;
-        inputStream = null;
-        outputStream = null;
-        remainingData = 0;
-        errors++;*/
-    }
-
-    public int getAnimCount() {
-        return anIntArray1360.length;
-    }
-
-    public int getModelCount() {
-        return 77136;
-    }
-
-    public void provide(int type, int file) {
-        if (type < 0 || file < 0)
+    public void provide(CacheArchive type, int file) {
+        if (file < 0)
             return;
         synchronized (requests) {
             for (Resource resource = (Resource) requests.reverseGetFirst(); resource != null; resource = (Resource) requests.reverseGetNext())
@@ -377,7 +323,6 @@ public final class ResourceProvider implements Runnable {
                         resource.loopCycle++;
                         if (resource.loopCycle > 50) {
                             resource.loopCycle = 0;
-                            request(resource);
                         }
                     }
 
@@ -387,7 +332,6 @@ public final class ResourceProvider implements Runnable {
                         resource.loopCycle++;
                         if (resource.loopCycle > 50) {
                             resource.loopCycle = 0;
-                            request(resource);
                         }
                     }
 
@@ -415,15 +359,15 @@ public final class ResourceProvider implements Runnable {
         }
     }
 
-    public void loadExtra(int type, int file) {
+    public void loadExtra(CacheArchive type, int file) {
         if (clientInstance.indices[0] == null) {
             return;
         } else if (maximumPriority == 0) {
             return;
         }
         Resource resource = new Resource();
-        resource.dataType = file;
-        resource.ID = type;
+        resource.dataType = type;
+        resource.ID = file;
         resource.incomplete = false;
         synchronized (extras) {
             extras.insertHead(resource);
@@ -481,11 +425,7 @@ public final class ResourceProvider implements Runnable {
     public void requestExtra(byte priority, int type, int file) {
         if (clientInstance.indices[0] == null)
             return;
-        //if (versions[type][file] == 0)
-        //	return;
-        byte[] data = clientInstance.indices[type + 1].decompress(file);
-        if (crcMatches(crcs[type][file], data))
-            return;
+
         fileStatus[type][file] = priority;
         if (priority > maximumPriority)
             maximumPriority = priority;
@@ -512,13 +452,12 @@ public final class ResourceProvider implements Runnable {
             Resource resource = (Resource) unrequested.popHead();
             if (resource == null)
                 break;
-            if (fileStatus[resource.dataType][resource.ID] != 0) {
+            if (fileStatus[resource.dataType.getIndex()][resource.ID] != 0) {
                 filesLoaded++;
             }
-            fileStatus[resource.dataType][resource.ID] = 0;
+            fileStatus[resource.dataType.getIndex()][resource.ID] = 0;
             requested.insertHead(resource);
             uncompletedCount++;
-            request(resource);
         }
     }
 
@@ -530,8 +469,8 @@ public final class ResourceProvider implements Runnable {
         }
     }
 
-    public void loadMandatory(int type, int id) {
-        if (type < 0 || id < 0) {
+    public void loadMandatory(CacheArchive type, int id) {
+        if (id < 0) {
             return;
         }
         synchronized (mandatoryRequests) {
@@ -559,7 +498,7 @@ public final class ResourceProvider implements Runnable {
             byte data[] = null;
 
             if (clientInstance.indices[0] != null)
-                data = clientInstance.indices[resource.dataType + 1].decompress(resource.ID);
+                data = clientInstance.indices[resource.dataType.getIndex()].decompress(resource.ID);
 
 
 
@@ -587,10 +526,9 @@ public final class ResourceProvider implements Runnable {
                 resource = (Resource) extras.popHead();
             }
             while (resource != null) {
-                if (fileStatus[resource.dataType][resource.ID] != 0) {
-                    fileStatus[resource.dataType][resource.ID] = 0;
+                if (fileStatus[resource.dataType.getIndex()][resource.ID] != 0) {
+                    fileStatus[resource.dataType.getIndex()][resource.ID] = 0;
                     requested.insertHead(resource);
-                    request(resource);
                     expectingData = true;
                     if (filesLoaded < totalFiles)
                         filesLoaded++;
@@ -610,11 +548,10 @@ public final class ResourceProvider implements Runnable {
                     if (data[file] == maximumPriority) {
                         data[file] = 0;
                         Resource newResource = new Resource();
-                        newResource.dataType = type;
+                        newResource.dataType = CacheArchive.values()[type];
                         newResource.ID = file;
                         newResource.incomplete = false;
                         requested.insertHead(newResource);
-                        request(newResource);
                         expectingData = true;
                         if (filesLoaded < totalFiles)
                             filesLoaded++;
@@ -628,80 +565,4 @@ public final class ResourceProvider implements Runnable {
         }
     }
 
-    public boolean highPriorityMusic(int file) {
-        return musicPriorities[file] == 1;
-    }
-
-    /**
-     * Grabs the checksum of a file from the cache.
-     *
-     * @param type The type of file (0 = model, 1 = anim, 2 = midi, 3 = map).
-     * @param id   The id of the file.
-     * @return
-     */
-    private boolean crcMatches(int expectedValue, byte crcData[]) {
-        if (crcData == null || crcData.length < 2)
-            return false;
-        int length = crcData.length - 2;
-        crc32.reset();
-        crc32.update(crcData, 0, length);
-        int crcValue = (int) crc32.getValue();
-        return crcValue == expectedValue;
-    }
-
-    public void writeAll() {
-        for (int i = 0; i < crcs.length; i++) {
-            writeChecksumList(i);
-            writeVersionList(i);
-        }
-    }
-
-    public int getChecksum(int type, int id) {
-        int crc = -1;
-        byte[] data = clientInstance.indices[type + 1].decompress(id);
-        if (data != null) {
-            int length = data.length - 2;
-            crc32.reset();
-            crc32.update(data, 0, length);
-            crc = (int) crc32.getValue();
-        }
-        return crc;
-    }
-
-    public int getVersion(int type, int id) {
-        int version = -1;
-        byte[] data = clientInstance.indices[type + 1].decompress(id);
-        if (data != null) {
-            int length = data.length - 2;
-            version = ((data[length] & 0xff) << 8) + (data[length + 1] & 0xff);
-        }
-        return version;
-    }
-
-    public void writeChecksumList(int type) {
-        try {
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(SignLink.findcachedir() + type + "_crc.dat"));
-            int total = 0;
-            for (int index = 0; index < clientInstance.indices[type + 1].getFileCount(); index++) {
-                out.writeInt(getChecksum(type, index));
-                total++;
-            }
-            System.out.println(type + "-" + total);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void writeVersionList(int type) {
-        try {
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(SignLink.findcachedir() + type + "_version.dat"));
-            for (int index = 0; index < clientInstance.indices[type + 1].getFileCount(); index++) {
-                out.writeShort(getVersion(type, index));
-            }
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
