@@ -71,7 +71,7 @@ public final class ObjectDefinition implements ObjectComposition {
         translateZ = 0;
         aBoolean3002 = false;
         supportItems = -1;
-        anInt2994 = -1;
+        areaId = -1;
         occludes = false;
         anInt3012 = 0;
         ambientSoundId = -1;
@@ -145,7 +145,7 @@ public final class ObjectDefinition implements ObjectComposition {
     public int sizeY;
     public int anInt2987;
     public int anInt2989;
-    public int anInt2994;
+    public int areaId;
     public int anInt3006;
     public int anInt3008;
     public int modelSizeZ;
@@ -699,9 +699,9 @@ public final class ObjectDefinition implements ObjectComposition {
                 anInt3013 = buffer.readUShort();
             } else if (opcode == 101)
                 anInt2958 = buffer.readUnsignedByte();
-            else if (opcode == 102)
-                anInt3006 = buffer.readUShort();
-            else if (opcode == 103)
+            else if (opcode == 102) {
+                mapscene = buffer.readUShort();
+            } else if (opcode == 103)
                 occludes = false;
             else if (opcode == 104)
                 anInt3024 = buffer.readUnsignedByte();
@@ -728,7 +728,7 @@ public final class ObjectDefinition implements ObjectComposition {
                     anIntArray2995[i] = anIntArray2995[i] * 0xffff / total;
 
             } else if (opcode == 107)
-                anInt2994 = buffer.readUShort();
+                areaId = buffer.readUShort();
 
             else if (opcode >= 150 && opcode < 155) {
                 if (actions == null)

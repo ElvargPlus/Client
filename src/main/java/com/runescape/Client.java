@@ -564,12 +564,12 @@ public class Client extends GameApplet implements RSClient {
     private int flashingSidebarId;
     private int multicombat;
     private Deque incompleteAnimables;
-    private IndexedImage[] mapScenes;
+
     private int trackCount;
     private int friendsListAction;
     private int mouseInvInterfaceIndex;
     private int lastActiveInvInterface;
-    private int anInt1071;
+    private int minimapIconCount;
     private int[] minimapHintX;
     private int[] minimapHintY;
     private Sprite mapDotItem;
@@ -796,7 +796,7 @@ public class Client extends GameApplet implements RSClient {
         incompleteAnimables = new Deque();
         anIntArray1057 = new int[33];
         aClass9_1059 = new Widget();
-        mapScenes = new IndexedImage[100];
+
         barFillColor = 0x4d4233;
         anIntArray1065 = new int[7];
         minimapHintX = new int[1000];
@@ -2415,14 +2415,22 @@ public class Client extends GameApplet implements RSClient {
         }
 
         gameScreenImageProducer.initDrawingArea();
-        anInt1071 = 0;
+        minimapIconCount = 0;
 
         for (int x = 0; x < 104; x++) {
             for (int y = 0; y < 104; y++) {
                 long i3 = scene.getGroundDecorationUid(plane, x, y);
                 if (i3 != 0) {
                     int id = ObjectKeyUtil.getObjectId(i3);
-                    
+                    int function = ObjectDefinition.lookup(id).areaId;
+                    if (function != -1) {
+                        AreaDefinition areaDef = AreaDefinition.lookup(function);
+                        int spriteId = areaDef.spriteId == -1 ? areaDef.iconKey : areaDef.spriteId;
+                        minimapHint[minimapIconCount] = ImageCache.get(spriteId);
+                        minimapHintX[minimapIconCount] = x;
+                        minimapHintY[minimapIconCount] = y;
+                        minimapIconCount++;
+                    }
                 }
             }
 
@@ -4339,11 +4347,7 @@ public class Client extends GameApplet implements RSClient {
             compass = new Sprite(mediaArchive, "compass", 0);
             leftFrame = new Sprite(mediaArchive, "screenframe", 0);
             topFrame = new Sprite(mediaArchive, "screenframe", 1);
-            try {
-                for (int k3 = 0; k3 < 100; k3++)
-                    mapScenes[k3] = new IndexedImage(mediaArchive, "mapsence", k3);
-            } catch (Exception _ex) {
-            }
+
             try {
                 for (int l3 = 0; l3 < 100; l3++)
                     mapFunctions[l3] = new Sprite(mediaArchive, "mapfunction", l3);
@@ -4386,8 +4390,7 @@ public class Client extends GameApplet implements RSClient {
             for (int i6 = 0; i6 < 100; i6++) {
                 if (mapFunctions[i6] != null)
                     mapFunctions[i6].method344(i5 + l5, j5 + l5, k5 + l5);
-                if (mapScenes[i6] != null)
-                    mapScenes[i6].offsetColor(i5 + l5, j5 + l5, k5 + l5);
+
             }
 
             drawLoadingText(83, "Unpacking textures");
@@ -4397,16 +4400,16 @@ public class Client extends GameApplet implements RSClient {
             Animation.init(configArchive);
             ObjectDefinition.init(configArchive);
             FloorDefinition.init(configArchive);
+            MapSceneDefinition.init(configArchive);
+            AreaDefinition.init(configArchive);
             TextureDefinition.unpackConfig(configArchive);
             NpcAnimationDefinition.init(configArchive);
             NpcDefinition.init(configArchive);
             IdentityKit.init(configArchive);
             Graphic.init(configArchive);
-            //AreaDefinition.init(configArchive);
             VariablePlayer.init(configArchive);
             VariableBits.init(configArchive);
             ItemDefinition.init(configArchive);
-            ItemDefinition.isMembers = isMembers;
             drawLoadingText(95, "Unpacking interfaces");
             GameFont gameFonts[] = {smallText, regularText, boldText, gameFont};
             Widget.load(interfaceArchive, gameFonts, mediaArchive, new RSFont[]{newSmallFont, newRegularFont, newBoldFont, newFancyFont});
@@ -4753,11 +4756,12 @@ public class Client extends GameApplet implements RSClient {
             int i5 = ObjectKeyUtil.getObjectId(id);
             ObjectDefinition def = ObjectDefinition.lookup(i5);
             if (def.mapscene != -1) {
-                if (mapScenes[def.mapscene] != null) {
-                    int i6 = (def.sizeX * 4 - mapScenes[def.mapscene].width) / 2;
-                    int j6 = (def.sizeY * 4 - mapScenes[def.mapscene].height) / 2;
-                    mapScenes[def.mapscene].draw(48 + l * 4 + i6, 48 + (104 - i - def.sizeY) * 4 + j6);
-                }
+                MapSceneDefinition mapIcon = MapSceneDefinition.lookup(def.mapscene);
+                Sprite mapSprite = ImageCache.get(mapIcon.spriteId);
+                int i6 = (def.sizeX * 4 - mapSprite.myWidth) / 2;
+                int j6 = (def.sizeY * 4 - mapSprite.myHeight) / 2;
+                mapSprite.drawSprite(48 + l * 4 + i6, 48 + (104 - i - def.sizeY) * 4 + j6);
+
             } else {
                 if (i3 == 0 || i3 == 2) {
                     if (k2 == 0) {
@@ -4826,7 +4830,11 @@ public class Client extends GameApplet implements RSClient {
             int l3 = ObjectKeyUtil.getObjectId(id);
             ObjectDefinition class46_1 = ObjectDefinition.lookup(l3);
             if (class46_1.mapscene != -1) {
-
+                MapSceneDefinition mapIcon = MapSceneDefinition.lookup(class46_1.mapscene);
+                Sprite mapSprite = ImageCache.get(mapIcon.spriteId);
+                int i6 = (class46_1.sizeX * 4 - mapSprite.myWidth) / 2;
+                int j6 = (class46_1.sizeY * 4 - mapSprite.myHeight) / 2;
+                mapSprite.drawSprite(48 + l * 4 + i6, 48 + (104 - i - class46_1.sizeY) * 4 + j6);
             } else if (j3 == 9) {
                 int l4 = 0xeeeeee;
                 if (id > 0) {
@@ -4852,11 +4860,11 @@ public class Client extends GameApplet implements RSClient {
             int j2 =  ObjectKeyUtil.getObjectId(id);
             ObjectDefinition class46 = ObjectDefinition.lookup(j2);
             if (class46.mapscene != -1) {
-                if (mapScenes[class46.mapscene] != null) {
-                    int i4 = (class46.sizeX * 4 - mapScenes[class46.mapscene].width) / 2;
-                    int j4 = (class46.sizeY * 4 - mapScenes[class46.mapscene].height) / 2;
-                    mapScenes[class46.mapscene].draw(48 + l * 4 + i4, 48 + (104 - i - class46.sizeY) * 4 + j4);
-                }
+                MapSceneDefinition mapIcon = MapSceneDefinition.lookup(class46.mapscene);
+                Sprite mapSprite = ImageCache.get(mapIcon.spriteId);
+                int i6 = (class46.sizeX * 4 - mapSprite.myWidth) / 2;
+                int j6 = (class46.sizeY * 4 - mapSprite.myHeight) / 2;
+                mapSprite.drawSprite(48 + l * 4 + i6, 48 + (104 - i - class46.sizeY) * 4 + j6);
             }
         }
     }
@@ -7212,7 +7220,6 @@ public class Client extends GameApplet implements RSClient {
         mapDotPlayer = null;
         mapDotFriend = null;
         mapDotTeam = null;
-        mapScenes = null;
         mapFunctions = null;
         anIntArrayArray929 = null;
         players = null;
@@ -12513,7 +12520,7 @@ public class Client extends GameApplet implements RSClient {
         int centreY = 464 - localPlayer.y / 32;
         minimapImage.rotate(151, angle, minimapLineWidth, 256 + minimapZoom, minimapLeft, centreY, (frameMode == ScreenMode.FIXED ? 9 : 7),
                 (frameMode == ScreenMode.FIXED ? xOffset + 54 : frameWidth - 158), 146, centreX);
-        for (int icon = 0; icon < anInt1071; icon++) {
+        for (int icon = 0; icon < minimapIconCount; icon++) {
             int mapX = (minimapHintX[icon] * 4 + 2) - localPlayer.x / 32;
             int mapY = (minimapHintY[icon] * 4 + 2) - localPlayer.y / 32;
             markMinimap(minimapHint[icon], mapX, mapY);
