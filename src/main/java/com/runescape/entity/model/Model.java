@@ -1,6 +1,8 @@
 package com.runescape.entity.model;
 
 import com.runescape.Client;
+import com.runescape.cache.CacheArchive;
+import com.runescape.cache.anim.Animation;
 import com.runescape.cache.anim.Frame;
 import com.runescape.cache.anim.FrameBase;
 import com.runescape.draw.Rasterizer2D;
@@ -23,6 +25,16 @@ public class Model extends Renderable implements RSModel {
 
     private static final int method4626(int var0, int var1, int var2, int var3) {
         return var0 * var2 + var3 * var1 >> 16;
+    }
+
+    public static int getFlags(int i, Animation def)
+    {
+        return getFlags(1, i, 0, null, def != null ? def.durations[0]:0, def != null ? def.allowsRotation:false, -1, 0);
+    }
+
+    public static int getFlags(int i, int i_101_, int i_102_, int[] is, int i_103_, boolean bool, int i_104_, int i_105_)
+    {
+        return 0;
     }
 
     private static final int method4663(int var0, int var1, int var2, int var3) {
@@ -809,7 +821,7 @@ public class Model extends Renderable implements RSModel {
 
         ModelHeader mdl = aClass21Array1661[file];
         if (mdl == null) {
-            Client.instance.resourceProvider.provide(0,file);
+            Client.instance.resourceProvider.provide(CacheArchive.MODELS_STANDARD,file);
             return null;
         } else {
             return new Model(file);
@@ -822,7 +834,7 @@ public class Model extends Renderable implements RSModel {
 
         ModelHeader mdl = aClass21Array1661[file];
         if (mdl == null) {
-            Client.instance.resourceProvider.provide(0,file);
+            Client.instance.resourceProvider.provide(CacheArchive.MODELS_STANDARD,file);
             return false;
         } else {
             return true;
@@ -832,6 +844,8 @@ public class Model extends Renderable implements RSModel {
     public Model(int length, Model model_segments[]) {
         this(length, model_segments, false);
     }
+
+
 
     public Model(int length, Model model_segments[], boolean preset) {
         try {
@@ -1728,6 +1742,10 @@ public class Model extends Renderable implements RSModel {
             }
 
         }
+    }
+
+    public void applyTransform(int frameId,Animation def) {
+        applyTransform(frameId);
     }
 
     public void applyTransform(int frameId) {
@@ -3288,7 +3306,7 @@ public class Model extends Renderable implements RSModel {
                         camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
                         camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
                         camera_vertex_z[texture_a], camera_vertex_z[texture_b], camera_vertex_z[texture_c],
-                        materials[face]);
+                        materials[face],0,true);
             } else {
                 Rasterizer3D.drawTexturedTriangle(
                         projected_vertex_y[tri_a], projected_vertex_y[tri_b], projected_vertex_y[tri_c],
@@ -3297,7 +3315,7 @@ public class Model extends Renderable implements RSModel {
                         camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
                         camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
                         camera_vertex_z[texture_a], camera_vertex_z[texture_b], camera_vertex_z[texture_c],
-                        materials[face]);
+                        materials[face],0,false);
 
             }
         } else if(faceHslC[face] == -1) {
@@ -3431,7 +3449,7 @@ public class Model extends Renderable implements RSModel {
                                 camera_vertex_y[tex_a], camera_vertex_y[tex_b], camera_vertex_y[tex_c],
                                 camera_vertex_x[tex_a], camera_vertex_x[tex_b], camera_vertex_x[tex_c],
                                 camera_vertex_z[tex_a], camera_vertex_z[tex_b], camera_vertex_z[tex_c],
-                                materials[face]);
+                                materials[face],0,false);
                     } else {
                         Rasterizer3D.drawTexturedTriangle(
                                 y_a, y_b, y_c,
@@ -3440,7 +3458,7 @@ public class Model extends Renderable implements RSModel {
                                 camera_vertex_y[tex_a], camera_vertex_y[tex_b], camera_vertex_y[tex_c],
                                 camera_vertex_x[tex_a], camera_vertex_x[tex_b], camera_vertex_x[tex_c],
                                 camera_vertex_z[tex_a], camera_vertex_z[tex_b], camera_vertex_z[tex_c],
-                                materials[face]);
+                                materials[face],0,false);
                     }
                 } else if(faceHslC[face] == -1) {
                     Rasterizer3D.drawFlatTriangle(y_a, y_b, y_c, x_a, x_b, x_c, modelIntArray3[faceHslA[face]]);
@@ -3477,7 +3495,7 @@ public class Model extends Renderable implements RSModel {
                                 camera_vertex_y[tex_a], camera_vertex_y[tex_b], camera_vertex_y[tex_c],
                                 camera_vertex_x[tex_a], camera_vertex_x[tex_b], camera_vertex_x[tex_c],
                                 camera_vertex_z[tex_a], camera_vertex_z[tex_b], camera_vertex_z[tex_c],
-                                materials[face]);
+                                materials[face],0,false);
                         Rasterizer3D.drawTexturedTriangle(
                                 y_a, y_c, anIntArray1679[3],
                                 x_a, x_c, anIntArray1678[3],
@@ -3485,7 +3503,7 @@ public class Model extends Renderable implements RSModel {
                                 camera_vertex_y[tex_a], camera_vertex_y[tex_b], camera_vertex_y[tex_c],
                                 camera_vertex_x[tex_a], camera_vertex_x[tex_b], camera_vertex_x[tex_c],
                                 camera_vertex_z[tex_a], camera_vertex_z[tex_b], camera_vertex_z[tex_c],
-                                materials[face]);
+                                materials[face],0,false);
                     } else {
                         Rasterizer3D.drawTexturedTriangle(
                                 y_a, y_b, y_c,
@@ -3494,7 +3512,7 @@ public class Model extends Renderable implements RSModel {
                                 camera_vertex_y[tex_a], camera_vertex_y[tex_b], camera_vertex_y[tex_c],
                                 camera_vertex_x[tex_a], camera_vertex_x[tex_b], camera_vertex_x[tex_c],
                                 camera_vertex_z[tex_a], camera_vertex_z[tex_b], camera_vertex_z[tex_c],
-                                materials[face]);
+                                materials[face],0,false);
                         Rasterizer3D.drawTexturedTriangle(
                                 y_a, y_c, anIntArray1679[3],
                                 x_a, x_c, anIntArray1678[3],
@@ -3502,7 +3520,7 @@ public class Model extends Renderable implements RSModel {
                                 camera_vertex_y[tex_a], camera_vertex_y[tex_b], camera_vertex_y[tex_c],
                                 camera_vertex_x[tex_a], camera_vertex_x[tex_b], camera_vertex_x[tex_c],
                                 camera_vertex_z[tex_a], camera_vertex_z[tex_b], camera_vertex_z[tex_c],
-                                materials[face]);
+                                materials[face],0,false);
                         //return;
                     }
                 } else if(faceHslC[face] == -1) {
@@ -3588,12 +3606,12 @@ public class Model extends Renderable implements RSModel {
     static int camera_vertex_y[] = new int[8000];
     static int camera_vertex_x[] = new int[8000];
     static int camera_vertex_z[] = new int[8000];
-    static int depthListIndices[] = new int[1600];//1500
-    static int faceLists[][] = new int[1600][512];//1500 / 512 //anIntArrayArray3809 //64
+    static int depthListIndices[] = new int[1500];//1500
+    static int faceLists[][] = new int[1500][512];//1500 / 512 //anIntArrayArray3809 //64
     static int anIntArray1673[] = new int[12];
-    static int anIntArrayArray1674[][] = new int[12][2000];//1500
-    static int anIntArray1676[] = new int[2000];//1500
-    static int anIntArray1675[] = new int[2000];//1500
+    static int anIntArrayArray1674[][] = new int[12][2500];//1500
+    static int anIntArray1676[] = new int[8000];//1500
+    static int anIntArray1675[] = new int[8000];//1500
     static int anIntArray1677[] = new int[12];
     static int anIntArray1678[] = new int[10];
     static int anIntArray1679[] = new int[10];

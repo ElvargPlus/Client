@@ -428,7 +428,7 @@ public class Mob extends Renderable {
                     if (displayedEmoteFrames < 0 || displayedEmoteFrames >= animation_3.frameCount)
                         emoteAnimation = -1;
                 }
-                animationStretches = animation_3.stretches;
+                animationStretches = animation_3.allowsRotation;
             }
             if (animationDelay > 0)
                 animationDelay--;

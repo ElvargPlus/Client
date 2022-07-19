@@ -1,6 +1,7 @@
 package com.runescape.cache.anim;
 
 import com.runescape.Client;
+import com.runescape.cache.CacheArchive;
 import com.runescape.io.Buffer;
 
 public final class Frame {
@@ -101,7 +102,7 @@ public final class Frame {
             int k = frame & 0xffff;
 
             if (animationlist[file] == null || animationlist[file].length == 0) {
-                Client.instance.resourceProvider.provide(1, file);
+                Client.instance.resourceProvider.provide(CacheArchive.ANIMATIONS_STANDARD, file);
                 return null;
             }
 

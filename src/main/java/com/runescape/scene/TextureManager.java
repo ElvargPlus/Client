@@ -13,7 +13,7 @@ public class TextureManager implements RSTextureProvider {
 
     @Override
     public void setBrightness(double brightness) {
-        Rasterizer3D.setBrightness(brightness);
+        Rasterizer3D.calculatePalette((float) brightness);
     }
 
     @Override

@@ -504,10 +504,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 				modelBufferSmall = new GpuIntBuffer();
 				modelBuffer = new GpuIntBuffer();
 
-				if (developerMode)
-				{
-					developerTools.activate();
-				}
+
 
 				lastFrameTime = System.currentTimeMillis();
 
@@ -564,7 +561,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	@Override
 	protected void shutDown()
 	{
-		developerTools.deactivate();
+
 
 		lightManager.shutDown();
 
@@ -686,10 +683,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			}
 			return null;
 		});
-		if (developerMode)
-		{
-			template.add(developerTools::shaderResolver);
-		}
+
 		template.addInclude(HdPlugin.class);
 
 		glProgram = PROGRAM.compile(template);

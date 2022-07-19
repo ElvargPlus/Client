@@ -51,9 +51,9 @@ public final class Graphic {
             if (opcode == 0) {
                 return;
             } else if (opcode == 1) {
-                modelId = buffer.readUShort();
+                modelId = buffer.readShort2();
             } else if (opcode == 2) {
-                animationId = buffer.readUShort();
+                animationId = buffer.readShort2();
 
                 if (Animation.animations != null)
                     animationSequence = Animation.animations[animationId];

@@ -16,29 +16,19 @@ public final class VariableBits {
     }
 
     public static void init(FileArchive archive) {
-        Buffer stream = new Buffer(archive.readFile("varbit.dat"));
-        int size = stream.readUShort();
+        Buffer buffer = new Buffer(archive.readFile("varbit.dat"));
+        int count = buffer.readUShort();
 
-        if (varbits == null) {
-            varbits = new VariableBits[size];
-        }
+        varbits = new VariableBits[count];
 
-        for (int index = 0; index < size; index++) {
+        for (int index = 0; index < count; index++) {
 
             if (varbits[index] == null) {
                 varbits[index] = new VariableBits();
             }
 
-            varbits[index].decode(stream);
+            varbits[index].decode(buffer);
 
-            if (varbits[index].aBoolean651) {
-                VariablePlayer.variables[varbits[index].setting].aBoolean713 = true;
-            }
-
-        }
-
-        if (stream.currentPosition != stream.payload.length) {
-            System.out.println("varbit load mismatch");
         }
 
     }

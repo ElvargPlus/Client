@@ -11,7 +11,9 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RGBImageFilter;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.runescape.Client;
@@ -37,6 +39,72 @@ public final class Sprite extends Rasterizer2D implements RSSpritePixels {
     private int identifier;
     private String name;
 
+    public Sprite(byte data[],int file) {
+        try {
+            Buffer buf = new Buffer(data);
+            myWidth = buf.readUShort();
+            myHeight = buf.readUShort();
+            drawOffsetX = buf.readUShort();
+            drawOffsetY = buf.readUShort();
+            maxWidth = myWidth;
+            maxHeight = myHeight;
+
+            myPixels = new int[myWidth * myHeight];
+            boolean alpha = buf.readUnsignedByte() == 1;
+            int pixelByteCount = buf.readInt();
+            int pixelCount = 0;
+            if(alpha) {
+                for(int pixel = 13; pixel < pixelByteCount + 13; pixel += 4) {
+                    int argb = 0;
+                    argb += ((buf.readUnsignedByte() & 0xff) << 24); // alpha
+                    argb += (buf.readUnsignedByte() & 0xff); // blue
+                    argb += ((buf.readUnsignedByte() & 0xff) << 8); // green
+                    argb += ((buf.readUnsignedByte() & 0xff) << 16); // red
+                    myPixels[pixelCount] = argb;
+                    pixelCount += 1;
+                }
+            } else {
+                for(int pixel = 13; pixel < pixelByteCount + 13; pixel += 3) {
+                    int argb = 0;
+                    argb += -16777216; // 255 alpha
+                    argb += (buf.readUnsignedByte() & 0xff); // blue
+                    argb += ((buf.readUnsignedByte() & 0xff) << 8); // green
+                    argb += ((buf.readUnsignedByte() & 0xff) << 16); // red
+                    myPixels[pixelCount] = argb;
+                    pixelCount += 1;
+                }
+            }
+
+
+            setTransparency(255, 0, 255);
+        } catch(Exception _ex) {
+            _ex.printStackTrace();
+            System.err.println("Could not load Image: " + file);
+        }
+    }
+
+
+    public Sprite(URL url) {
+        try {
+            if(url == null) {
+                return;
+            }
+            BufferedImage image = ImageIO.read(url.openStream());
+
+            myWidth = image.getWidth();
+            myHeight = image.getHeight();
+            maxWidth = myWidth;
+            maxHeight = myHeight;
+            drawOffsetX = 0;
+            drawOffsetY = 0;
+            myPixels = new int[myWidth * myHeight];
+            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
+            pixelgrabber.grabPixels();
+            setTransparency(255, 0, 255);
+        } catch(Exception exception) {
+            System.out.println(exception);
+        }
+    }
     public Sprite(int width, int height, int offsetX, int offsetY, int[] pixels) {
         this.myWidth = width;
         this.myHeight = height;

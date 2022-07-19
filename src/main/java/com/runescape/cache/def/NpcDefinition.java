@@ -12,35 +12,11 @@ import net.runelite.api.IterableHashTable;
 import net.runelite.rs.api.RSIterableNodeHashTable;
 import net.runelite.rs.api.RSNPCComposition;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
-/**
- * Refactored reference:
- * http://www.rune-server.org/runescape-development/rs2-client/downloads/575183-almost-fully-refactored-317-client.html
- */
 public final class NpcDefinition implements RSNPCComposition {
 
-	private static final String PETS[][] = { { "318", "Dark Core" }, { "495", "Venenatis Spiderling" },
-			{ "497", "Callisto Cub" }, { "964", "Hellpuppy" }, { "2055", "Chaos Elemental Jr." },
-			{ "2130", "Snakeling" }, { "2131", "Magma Snakeling" }, { "2132", "Tanzanite Snakeling" },
-			{ "5536", "Vet'ion" }, { "5537", "Vet'ion Reborn" }, { "5561", "Scorpias' Offspring" },
-			{ "5884", "Abyssal Orphan" }, { "5892", "TzRek-Jad" }, { "6628", "Dagganoth Supreme Jr." },
-			{ "6629", "Dagganoth Prime Jr." }, { "6630", "Dagganoth Rex Jr." }, { "6631", "Chick'arra" },
-			{ "6632", "General Awwdor" }, { "6633", "Commander Miniana" }, { "6634", "K'ril Tinyroth" },
-			{ "6635", "Baby Mole" }, { "6636", "Prince Black Dragon" }, { "6637", "Kalphite Princess" },
-			{ "6638", "Kalphite Princess" }, { "6639", "Smoke Devil" }, { "6640", "Baby Kraken" },
-			{ "6642", "Penance Princess" }, { "7520", "Olmlet" },
-
-			{ "6715", "Heron" }, { "6717", "Beaver" }, { "6718", "Red Chinchompa" }, { "6719", "Grey Chinchompa" },
-			{ "6720", "Black Chimchompa" }, { "6723", "Rock Golem" }, { "7334", "Giant Squirrel" },
-			{ "7335", "Tangleroot" }, { "7336", "Rocky" },
-
-			{ "7337", "Fire Rift Guardian" }, { "7338", "Air Rift Guardian" }, { "7339", "Mind Rift Guardian" },
-			{ "7340", "Water Rift Guardian" }, { "7341", "Earth Rift Guardian" }, { "7342", "Body Rift Guardian" },
-			{ "7343", "Cosmic Rift Guardian" }, { "7344", "Chaos Rift Guardian" }, { "7345", "Nature Rift Guardian" },
-			{ "7346", "Law Rift Guardian" }, { "7347", "Death Rift Guardian" }, { "7348", "Soul Rift Guardian" },
-			{ "7349", "Astral Rift Guardian" }, { "7350", "Blood Rift Guardian" } };
 
 	public static int anInt56;
 	public static Buffer dataBuf;
@@ -58,6 +34,50 @@ public final class NpcDefinition implements RSNPCComposition {
 	public String actions[];
 	public int walkingAnimation;
 	public int size;
+	public int runAnimIndex;
+	public int anInt67;
+	public int anInt58;
+	public int anInt2803;
+	public boolean isInteractable;
+	public int anInt2804;
+	public int anInt2809;
+	public int anInt2810;
+	public int anInt2812;
+	public int anInt2814;
+	public int anInt2815;
+	public byte aByte2816;
+	public boolean aBoolean2825;
+	public int anInt2826;
+	public int anInt2828;
+	public int anInt2831;
+	public int anInt2833;
+	public byte aByte2836;
+	public int anInt2837;
+	public byte aByte2839;
+	public boolean aBoolean2843;
+	public int anInt2844;
+	public int anInt2849;
+	public int anInt2852;
+	public byte aByte2853;
+	public byte aByte2855;
+	public int anInt2856;
+	public byte aByte2857;
+	public int anInt2859;
+	public int idleAnimation;
+	public int anInt2860;
+	public int anInt2862;
+	public short aShort2863;
+	public int anInt2864;
+	public byte aByte2868;
+	public short aShort2871;
+	public byte aByte2873;
+	public byte aByte2877;
+	public int anInt2878;
+	public boolean aBoolean2883;
+	public int anInt2886;
+	public byte[] aByteArray2820;
+	public int[] anIntArray2832;
+	public int[][] anIntArrayArray2842;
 	public int[] recolorToReplace;
 	public int[] chatheadModels;
 	public int headIcon;
@@ -78,7 +98,7 @@ public final class NpcDefinition implements RSNPCComposition {
 	private int category;
 	public short[] textureReplace;
 	public short[] textureFind;
-	public byte description[];
+	public String description;
 	public int widthScale;
 	public int contrast;
 	public boolean priorityRender;
@@ -105,6 +125,58 @@ public final class NpcDefinition implements RSNPCComposition {
 		isMinimapVisible = true;
 		widthScale = 128;
 		priorityRender = false;
+
+		description = null;
+		anInt58 = -1;
+		anInt67 = -1;
+
+		params = null;
+		aByte2836 = 0;
+		aByte2853 = 0;
+		aByte2857 = 0;
+		aBoolean2883 = false;
+
+		anInt2814 = -1;
+		aByteArray2820 = null;
+		anIntArray2832 = null;
+
+		anIntArrayArray2842 = null;
+		models = null;
+		anInt2809 = -1;
+		anInt2803 = -1;
+		anInt2804 = -1;
+		aBoolean2843 = false;
+		anInt2833 = -1;
+		aBoolean2825 = false;
+		anInt2826 = -1;
+		aByte2855 = (byte) -1;
+		aByte2816 = (byte) 0;
+		aByte2839 = (byte) 0;
+		anInt2812 = -1;
+		anInt2844 = 256;
+		isInteractable = true;
+		anInt2810 = -1;
+		anInt2852 = 256;
+		anInt2860 = -1;
+		anInt2859 = -1;
+		anInt2831 = 0;
+		anInt2837 = -1;
+		anInt2862 = 0;
+		aShort2863 = (short) 0;
+		anInt2864 = 0;
+		aByte2868 = (byte) -16;
+		ambient = 0;
+		anInt2849 = -1;
+		anInt2856 = -1;
+		aShort2871 = (short) 0;
+		anInt2828 = 255;
+		aByte2877 = (byte) -96;
+		anInt2878 = -1;
+		aByte2873 = (byte) 4;
+		anInt2815 = -1;
+		anInt2886 = -1;
+		runAnimIndex = -1;
+
 	}
 
 	/**
@@ -113,111 +185,19 @@ public final class NpcDefinition implements RSNPCComposition {
 	 * @param id
 	 */
 	public static NpcDefinition lookup(int id) {
-		for (int index = 0; index < 20; index++)
+		for (int index = 0; index < 50; index++)
 			if (cache[index].interfaceType == (long) id)
 				return cache[index];
 
-		anInt56 = (anInt56 + 1) % 20;
+		anInt56 = (anInt56 + 1) % 50;
 		NpcDefinition definition = cache[anInt56] = new NpcDefinition();
-		dataBuf.currentPosition = offsets[id];
-		definition.interfaceType = id;
-		definition.id = id;
-		definition.decode(dataBuf);
-
-		switch (id) {
-		// Pets
-		case 497: // Callisto pet
-			definition.widthScale = 45;
-			definition.size = 2;
-			break;
-		case 6609: // Callisto
-			definition.size = 4;
-			break;
-		case 995:
-			definition.recolorToFind = new int[2];
-			definition.recolorToReplace = new int[2];
-			definition.recolorToFind[0] = 528;
-			definition.recolorToReplace[0] = 926;
-			break;
-		case 7456:
-			definition.actions = new String[] { "Repairs", null, null, null, null, null, null };
-			break;
-		case 1274:
-			definition.combatLevel = 35;
-			break;
-		case 2660:
-			definition.combatLevel = 0;
-			definition.actions = new String[] { "Trade", null, null, null, null, null, null };
-			definition.name = "Pker";
-			break;
-		case 6477:
-			definition.combatLevel = 210;
-			break;
-		case 6471:
-			definition.combatLevel = 131;
-			break;
-		case 5816:
-			definition.combatLevel = 38;
-			break;
-		case 100:
-			definition.isMinimapVisible = true;
-			break;
-		case 1306:
-			definition.actions = new String[] { "Make-over", null, null, null, null, null, null };
-			break;
-		case 3309:
-			definition.name = "Mage";
-			definition.actions = new String[] { "Trade", null, "Equipment", "Runes", null, null, null };
-			break;
-		case 1158:
-			definition.name = "@or1@Maxed bot";
-			definition.combatLevel = 126;
-			definition.actions = new String[] { null, "Attack", null, null, null, null, null };
-			definition.models[5] = 268; // platelegs rune
-			definition.models[0] = 18954; // Str cape
-			definition.models[1] = 21873; // Head - neitznot
-			definition.models[8] = 15413; // Shield rune defender
-			definition.models[7] = 5409; // weapon whip
-			definition.models[4] = 13307; // Gloves barrows
-			definition.models[6] = 3704; // boots climbing
-			definition.models[9] = 290; // amulet glory
-			break;
-		case 1200:
-			definition.copy(lookup(1158));
-			definition.models[7] = 539; // weapon dds
-			break;
-		case 4096:
-			definition.name = "@or1@Archer bot";
-			definition.combatLevel = 90;
-			definition.actions = new String[] { null, "Attack", null, null, null, null, null };
-			definition.models[0] = 20423; // cape avas
-			definition.models[1] = 21873; // Head - neitznot
-			definition.models[7] = 31237; // weapon crossbow
-			definition.models[4] = 13307; // Gloves barrows
-			definition.models[6] = 3704; // boots climbing
-			definition.models[5] = 20139; // platelegs zammy hides
-			definition.models[2] = 20157; // platebody zammy hides
-			definition.standingAnimation = 7220;
-			definition.walkingAnimation = 7223;
-			definition.rotate180AnimIndex = 7220;
-			definition.rotate90CCWAnimIndex = 7220;
-			definition.rotate90CWAnimIndex = 7220;
-			break;
-		case 1576:
-			definition.actions = new String[] { "Trade", null, "Equipment", "Ammunition", null, null, null };
-			break;
-		case 3343:
-			definition.actions = new String[] { "Trade", null, "Heal", null, null, null, null };
-			break;
-		case 506:
-		case 526:
-			definition.actions = new String[] { "Trade", null, null, null, null, null, null };
-			break;
-		case 315:
-			definition.actions = new String[] { "Talk-to", null, "Trade", "Sell Emblems", "Request Skull", null, null };
-			break;
-
+		if (id >= 0 && id < TOTAL_NPCS && offsets[id] != -1) {
+			dataBuf.currentPosition = offsets[id];
+			definition.interfaceType = id;
+			definition.id = id;
+			definition.decode(dataBuf);
 		}
+
 		return definition;
 	}
 
@@ -227,8 +207,10 @@ public final class NpcDefinition implements RSNPCComposition {
         dataBuf = new Buffer(archive.readFile("npc.dat"));
         Buffer idxBuf = new Buffer(archive.readFile("npc.idx"));
 
-		int size = idxBuf.readUShort();
+		int size = archive.readFile("npc.idx").length / 2;
 		TOTAL_NPCS = size;
+
+		System.out.println("Npcs Read -> " + TOTAL_NPCS);
 
 		offsets = new int[size];
 
@@ -239,13 +221,13 @@ public final class NpcDefinition implements RSNPCComposition {
 			offset += idxBuf.readUShort();
 		}
 
-		cache = new NpcDefinition[20];
+		cache = new NpcDefinition[50];
 
-		for (int count = 0; count < 20; count++) {
+		for (int count = 0; count < 50; count++) {
 			cache[count] = new NpcDefinition();
 		}
 
-		System.out.println("Loaded: " + size + " mobs");
+		System.out.println("Mobs Read -> " + size);
 	}
 
 	public static void clear() {
@@ -254,37 +236,6 @@ public final class NpcDefinition implements RSNPCComposition {
 		cache = null;
 		dataBuf = null;
 	}
-
-	private void copy(NpcDefinition copy) {
-		size = copy.size;
-		rotationSpeed = copy.rotationSpeed;
-		walkingAnimation = copy.walkingAnimation;
-		rotate180AnimIndex = copy.rotate180AnimIndex;
-		rotate90CWAnimIndex = copy.rotate90CWAnimIndex;
-		rotate90CCWAnimIndex = copy.rotate90CCWAnimIndex;
-		varbitId = copy.varbitId;
-		varpIndex = copy.varpIndex;
-		combatLevel = copy.combatLevel;
-		name = copy.name;
-		description = copy.description;
-		headIcon = copy.headIcon;
-		clickable = copy.clickable;
-		ambient = copy.ambient;
-		heightScale = copy.heightScale;
-		widthScale = copy.widthScale;
-		isMinimapVisible = copy.isMinimapVisible;
-		contrast = copy.contrast;
-		actions = new String[copy.actions.length];
-		for (int i = 0; i < actions.length; i++) {
-			actions[i] = copy.actions[i];
-		}
-		models = new int[copy.models.length];
-		for (int i = 0; i < models.length; i++) {
-			models[i] = copy.models[i];
-		}
-		priorityRender = copy.priorityRender;
-	}
-
 	public Model model() {
 		if (configs != null) {
 			NpcDefinition entityDef = morph();
@@ -372,6 +323,7 @@ public final class NpcDefinition implements RSNPCComposition {
 			modelCache.put(model, interfaceType);
 		}
 		Model empty = Model.EMPTY_MODEL;
+
 		empty.replace(model, Frame.noAnimationInProgress(frame) & Frame.noAnimationInProgress(j));
 		if (frame != -1 && j != -1)
 			empty.mix(ai, j, frame);
@@ -437,147 +389,292 @@ public final class NpcDefinition implements RSNPCComposition {
 			model_1.fits_on_single_square = true;
 		return model_1;
 	}
+	private void decode(Buffer buffer)
+	{
+		while (true)
+		{
+			int opcode = buffer.readUnsignedByte();
+			if (opcode == 0)
+				break;
 
-	public void decode(Buffer buffer) {
-	    
-	    while(true) {
-            int opcode = buffer.readUnsignedByte();
-            if (opcode == 0) {
-                return;
-            } else if (opcode == 1) {
-                int len = buffer.readUnsignedByte();
-				models = new int[len];
-                for (int i = 0; i < len; i++) {
-                    models[i] = buffer.readUShort();
-                }
-            } else if (opcode == 2) {
-                name = buffer.readJagexString();
-            } else if (opcode == 12) {
-                size = buffer.readUnsignedByte();
-            } else if (opcode == 13) {
-				standingAnimation = buffer.readUShort();
-            } else if (opcode == 14) {
-				walkingAnimation = buffer.readUShort();
-            } else if (opcode == 15) {
-				rotateLeftAnimation = buffer.readUShort();
-            } else if (opcode == 16) {
-				rotateRightAnimation = buffer.readUShort();
-            } else if (opcode == 17) {
-                walkingAnimation = buffer.readUShort();
-                rotate180AnimIndex = buffer.readUShort();
-                rotate90CWAnimIndex = buffer.readUShort();
-                rotate90CCWAnimIndex = buffer.readUShort();
-			} else if (opcode == 18) {
-				category = buffer.readUShort();
-            } else if (opcode >= 30 && opcode < 35) {
-                if (actions == null) {
-                    actions = new String[5];
-                }
+			if (opcode == 1)
+			{
+				int count = buffer.readUnsignedByte();
+				models = new int[count];
+				for (int i = 0; i != count; ++i)
+				{
+					models[i] = buffer.readUShort();
+					if (models[i] == 65535)
+						models[i] = -1;
 
-                actions[opcode - 30] = buffer.readString();
-
-                if (actions[opcode - 30].equalsIgnoreCase("Hidden")) {
-                    actions[opcode - 30] = null;
-                }
-            } else if (opcode == 40) {
-                int len = buffer.readUnsignedByte();
-                recolorToFind = new int[len];
-                recolorToReplace = new int[len];
-                for (int i = 0; i < len; i++) {
-					recolorToFind[i] = buffer.readUShort();
-					recolorToReplace[i] = buffer.readUShort();
-                }
-
-			} else if (opcode == 41) {
-				int length = buffer.readUnsignedByte();
-				textureFind = new short[length];
-				textureReplace = new short[length];
-				for (int index = 0; index < length; index++) {
-					textureFind[index] = (short) buffer.readUShort();
-					textureReplace[index] = (short) buffer.readUShort();
 				}
-            } else if (opcode == 60) {
-                int len = buffer.readUnsignedByte();
-				chatheadModels = new int[len];
-                for (int i = 0; i < len; i++) {
-                    chatheadModels[i] = buffer.readUShort();
-                }
-            } else if (opcode == 93) {
+
+			}
+			else if (opcode == 2)
+				name = buffer.readStringJagex();
+			else if (opcode == 3)
+				description = buffer.readStringJagex();
+			else if (opcode == 12)
+				size = buffer.readSignedByte();
+			else if (opcode >= 30 && opcode < 40)
+				actions[opcode - 30] = buffer.readStringJagex();
+
+			else if (opcode == 40)
+			{
+				int count = buffer.readUnsignedByte();
+				recolorToFind = new int[count];
+				recolorToReplace = new int[count];
+				for (int i = 0; i != count; ++i)
+				{
+					recolorToFind[i] = (short) buffer.readUShort();
+					recolorToReplace[i] = (short) buffer.readUShort();
+				}
+
+			}
+			else if (opcode == 41)
+			{
+				int count = buffer.readUnsignedByte();
+				textureFind = new short[count];
+				textureReplace = new short[count];
+				for (int i = 0; i != count; ++i)
+				{
+					textureFind[i] = (short) buffer.readUShort();
+					textureReplace[i] = (short) buffer.readUShort();
+				}
+
+			}
+			else if (opcode == 42)
+			{
+				int count = buffer.readUnsignedByte();
+				aByteArray2820 = new byte[count];
+				for (int i = 0; i != count; ++i)
+					aByteArray2820[i] = (byte) count;
+
+			}
+			else if (opcode == 60)
+			{
+				int count = buffer.readUnsignedByte();
+				chatheadModels = new int[count];
+				for (int i = 0; i != count; ++i)
+					chatheadModels[i] = buffer.readUShort();
+
+			}
+			else if (opcode == 93)
 				isMinimapVisible = false;
-            } else if (opcode == 95)
-                combatLevel = buffer.readUShort();
-            else if (opcode == 97)
+			else if (opcode == 95)
+				combatLevel = buffer.readUShort();
+			else if (opcode == 97)
 				widthScale = buffer.readUShort();
-            else if (opcode == 98)
+			else if (opcode == 98)
 				heightScale = buffer.readUShort();
-            else if (opcode == 99)
-                priorityRender = true;
-            else if (opcode == 100)
+			else if (opcode == 99)
+				priorityRender = true;
+			else if (opcode == 100)
 				ambient = buffer.readSignedByte();
-            else if (opcode == 101)
-				contrast = buffer.readSignedByte();
-            else if (opcode == 102)
-                headIcon = buffer.readUShort();
-            else if (opcode == 103)
+			else if (opcode == 101)
+				contrast = 5 * buffer.readSignedByte();
+			else if (opcode == 102)
+				headIcon = buffer.readUShort();
+			else if (opcode == 103)
 				rotationSpeed = buffer.readUShort();
-            else if (opcode == 106 || opcode == 118) {
-				varbitId = buffer.readUShort();
 
-				if (varbitId == 65535) {
+			else if (opcode == 106 || opcode == 118)
+			{
+				varbitId = buffer.readUShort();
+				if (varbitId == 65535)
 					varbitId = -1;
-				}
 
 				varpIndex = buffer.readUShort();
-
-				if (varpIndex == 65535) {
+				if (varpIndex == 65535)
 					varpIndex = -1;
+
+				int n1 = -1;
+				if (opcode == 118)
+				{
+					n1 = buffer.readUShort();
+					if (n1 == 65535)
+						n1 = -1;
+
 				}
-
-				int value = -1;
-
-				if (opcode == 118) {
-					value = buffer.readUShort();
-				}
-
-				int len = buffer.readUnsignedByte();
-				configs = new int[len + 2];
-				for (int i = 0; i <= len; i++) {
+				int n2 = buffer.readUnsignedByte();
+				configs = new int[n2 + 2];
+				for (int i = 0; i <= n2; ++i)
+				{
 					configs[i] = buffer.readUShort();
-					if (configs[i] == 65535) {
+					if (configs[i] == 65535)
 						configs[i] = -1;
-					}
+
 				}
-				configs[len + 1] = value;
-			} else if (opcode == 109) {
-					rotationFlag = false;
-			} else if (opcode == 111) {
-					isPet = true;
-			} else if (opcode == 107) {
-				clickable = false;
-			} else if (opcode == 249)  {
-				int length = buffer.readUnsignedByte();
 
-				params = new HashMap<>(length);
+				configs[n2 + 1] = n1;
+			}
+			else if (opcode == 107)
+				isInteractable = false;
+			else if (opcode == 109)
+				rotationFlag = false;
+			else if (opcode == 111)
+				isPet = false;
 
-				for (int i = 0; i < length; i++) {
-					boolean isString = buffer.readUnsignedByte() == 1;
-					int key = buffer.read24Int();
-					Object value;
+			else if (opcode == 113)
+			{
+				aShort2863 = (short) buffer.readUShort();
+				aShort2871 = (short) buffer.readUShort();
+			}
+			else if (opcode == 114)
+			{
+				aByte2877 = buffer.readSignedByte();
+				aByte2868 = buffer.readSignedByte();
+			}
+			else if (opcode == 119)
+				aByte2816 = buffer.readSignedByte();
 
-					if (isString) {
-						value = buffer.readString();
-					} else {
-						value = buffer.readInt();
-					}
+			else if (opcode == 121)
+			{
+				anIntArrayArray2842 = new int[models.length][];
+				int count = buffer.readUnsignedByte();
+				for (int i = 0; i != count; ++i)
+				{
+					int index = buffer.readUnsignedByte();
+					int[] out = anIntArrayArray2842[index] = new int[3];
+					out[0] = buffer.readUnsignedByte();
+					out[1] = buffer.readUnsignedByte();
+					out[2] = buffer.readUnsignedByte();
+				}
 
+			}
+			else if (opcode == 122)
+				anInt2878 = buffer.readUShort();
+			else if (opcode == 123)
+				anInt2804 = buffer.readUShort();
+			else if (opcode == 125)
+				aByte2873 = buffer.readSignedByte();
+			else if (opcode == 127)//anim index.
+				anInt2837 = buffer.readUShort();
+			else if (opcode == 128)
+				buffer.readSignedByte();
+
+			else if (opcode == 134)
+			{
+				anInt2812 = buffer.readUShort();
+				if (anInt2812 == 65535)
+					anInt2812 = -1;
+
+				anInt2833 = buffer.readUShort();
+				if (anInt2833 == 65535)
+					anInt2833 = -1;
+
+				anInt2809 = buffer.readUShort();
+				if (anInt2809 == 65535)
+					anInt2809 = -1;
+
+				anInt2810 = buffer.readUShort();
+				if (anInt2810 == 65535)
+					anInt2810 = -1;
+
+				anInt2864 = buffer.readUnsignedByte();
+			}
+			else if (opcode == 135)
+			{
+				anInt2815 = buffer.readUnsignedByte();
+				anInt2859 = buffer.readUShort();
+			}
+			else if (opcode == 136)
+			{
+				anInt2856 = buffer.readUnsignedByte();
+				anInt2886 = buffer.readUShort();
+			}
+			else if (opcode == 137)
+				anInt2860 = buffer.readUShort();
+			else if (opcode == 138)
+				anInt2814 = buffer.readUShort();
+			else if (opcode == 139)
+				anInt2826 = buffer.readUShort();
+			else if (opcode == 140)
+				anInt2828 = buffer.readUnsignedByte();
+			else if (opcode == 141)
+				aBoolean2843 = true;
+			else if (opcode == 142)
+				anInt2849 = buffer.readUShort();
+			else if (opcode == 143)
+				aBoolean2825 = true;
+
+			else if (opcode >= 150 && opcode < 155)
+			{
+				actions[opcode - 150] = buffer.readString();
+
+			}
+			else if (opcode == 155)
+			{
+				aByte2836 = buffer.readSignedByte();
+				aByte2853 = buffer.readSignedByte();
+				aByte2857 = buffer.readSignedByte();
+				aByte2839 = buffer.readSignedByte();
+			}
+			else if (opcode == 158)
+				aByte2855 = (byte) 1;
+			else if (opcode == 159)
+				aByte2855 = (byte) 0;
+
+			else if (opcode == 160)
+			{
+				int count = buffer.readUnsignedByte();
+				anIntArray2832 = new int[count];
+				for (int i = 0; i != count; ++i)
+					anIntArray2832[i] = buffer.readUShort();
+
+			}
+			else if (opcode == 162)
+				aBoolean2883 = true;
+			else if (opcode == 163)
+				anInt2803 = buffer.readUnsignedByte();
+
+			else if (opcode == 164)
+			{
+				anInt2844 = buffer.readUShort();
+				anInt2852 = buffer.readUShort();
+			}
+			else if (opcode == 165)
+				anInt2831 = buffer.readUnsignedByte();
+			else if (opcode == 168)
+				anInt2862 = buffer.readUnsignedByte();
+
+			else if (opcode == 249)
+			{
+				int count = buffer.readUnsignedByte();
+				if (params == null)
+					params = new Hashtable<>();
+
+				for (int i = 0; i != count; ++i)
+				{
+					boolean string = buffer.readUnsignedByte() == 1;
+					int key = buffer.readMedium();
+					Object value = string ? buffer.readString():Integer.valueOf(buffer.readInt());
 					params.put(key, value);
 				}
-            } else {
-                System.out.println(String.format("npc def invalid opcode: %d", opcode));
-            }
-        }
-	}
 
+			}
+			else
+			{
+				System.out.println("[NPCDef] Unknown opcode: " + opcode);
+				break;
+			}
+		}
+		if (anInt2837 >= 0 && anInt2837 < NpcAnimationDefinition.defs.length)
+		{
+			NpcAnimationDefinition def = NpcAnimationDefinition.defs[anInt2837];
+			if (def != null) {
+				idleAnimation = def.idleAnimation;
+				walkingAnimation = def.walkingAnimation;
+				rotate180AnimIndex = def.rotate180AnimIndex;
+				rotate90CWAnimIndex = def.rotate90CWAnimIndex;
+				rotate90CCWAnimIndex = def.rotate90CCWAnimIndex;
+				runAnimIndex = def.runAnimIndex;
+			}
+		}
+		else if (anInt2837 >= 0)
+			System.out.println("Inavlid NPC Anim Def: " + anInt2837);
+
+	}
 
 	@Override
 	public HeadIcon getOverheadIcon() {

@@ -2,6 +2,7 @@ package com.runescape.cache.def;
 
 import com.runescape.Client;
 import com.runescape.cache.FileArchive;
+import com.runescape.cache.anim.Animation;
 import com.runescape.cache.anim.Frame;
 import com.runescape.cache.config.VariableBits;
 import com.runescape.collection.ReferenceCache;
@@ -11,207 +12,304 @@ import net.runelite.api.IterableHashTable;
 import net.runelite.api.Node;
 import net.runelite.api.ObjectComposition;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Hashtable;
 
 public final class ObjectDefinition implements ObjectComposition {
 
-    public static final Model[] aModelArray741s = new Model[4];
-    private static final int[] OBELISK_IDS = {14829, 14830, 14827, 14828, 14826, 14831};
-    public static boolean lowMemory;
-    public static Buffer stream;
-    public static int[] streamIndices;
-    public static Client clientInstance;
-    public static int cacheIndex;
-    public static ReferenceCache models = new ReferenceCache(30);
-    public static ObjectDefinition[] cache;
-    public static ReferenceCache baseModels = new ReferenceCache(500);
-    public static int TOTAL_OBJECTS;
-    public boolean obstructsGround;
-    public byte ambient;
-    public int translateX;
-    public String name;
-    public int scaleZ;
-    public int contrast;
-    public int sizeX;
-    public int translateY;
-    public int minimapFunction;
-    public int[] recolorToReplace;
-    public int scaleX;
-    public int varpID;
-    public boolean inverted;
-    public int type;
-    public boolean blocksProjectile;
-    public int mapscene;
-    public int configs[];
-    public int supportItems;
-    public int sizeY;
-    public boolean contouredGround;
-    public boolean occludes;
-    public boolean removeClipping;
     public boolean interactType;
-    public int surroundings;
-    public boolean mergeNormals;
-    public int scaleY;
-    public int[] objectModels;
-    public int varbitID;
-    public int decorDisplacement;
-    public int[] objectTypes;
-    public String description;
-    public boolean isInteractive;
-    public boolean castsShadow;
+    public byte[] description;
+    public boolean hasActions;
+
+    public int anInt746;
+    public int mapscene;
     public int animation;
+    public boolean contouredGround;
+    public boolean aBoolean764;
+    public boolean aBoolean757;
+
+    public void setDefaults() {
+        interactType = true;
+        aBoolean757 = true;
+        hasActions = false;
+        contouredGround = false;
+        aBoolean764 = false;
+        anInt746 = -1;
+        mapscene = -1;
+        animation = -1;
+
+        anInt3030 = 0;
+        aBoolean2961 = false;
+        aByte2974 = 0;
+        aByte3045 = 0;
+        aByte3052 = 0;
+        modelTypes = null;
+        aByteArray2996 = null;
+        textureReplace = null;
+        recolorToReplace = null;
+        textureFind = null;
+        recolorToFind = null;
+        anIntArray2981 = null;
+        configs = null;
+        anIntArray3036 = null;
+        objectModels = null;
+        actions = null;
+        params = null;
+
+        aBoolean2972 = true;
+        modelSizeY = 128;
+        anInt2963 = 0;
+        aByte2960 = (byte) 0;
+        anInt2983 = 0;
+        anInt2971 = 0;
+        sizeY = 1;
+        anInt2987 = -1;
+        anInt2975 = 0;
+        anInt2964 = 0;
+        modelSizeX = 128;
+        name = "null";
+        translateZ = 0;
+        aBoolean3002 = false;
+        supportItems = -1;
+        areaId = -1;
+        occludes = false;
+        anInt3012 = 0;
+        ambientSoundId = -1;
+        varbitId = -1;
+        removeClipping = false;
+        aBoolean3007 = false;
+        modelSizeZ = 128;
+        anInt3018 = 0;
+        anInt3024 = 0xff;
+        anInt2958 = 0;
+        anIntArray3019 = null;
+        anInt3023 = -1;
+        anInt2989 = 0;
+        anInt3008 = -1;
+        anInt3032 = 960;
+        randomizeAnimStart = true;
+        decorDisplacement = 64;
+        anIntArray2995 = null;
+        aByte3027 = (byte) 0;
+        anInt3020 = 256;
+        anInt3038 = -1;
+        translateX = 0;
+        ambient = 0;
+        anInt3010 = 2;
+        aBoolean2993 = false;
+        aBoolean2998 = false;
+        translateY = 0;
+        surroundings = 0;
+        anInt3050 = 256;
+        contrast = 0;
+        obstructsGround = false;
+        aBoolean2990 = false;
+        blocksProjectile = true;
+        aBoolean2992 = false;
+        mergeNormals = false;
+        sizeX = 1;
+        anInt2962 = 0;
+        anInt3006 = -1;
+        varbitID = -1;
+        anInt3013 = -1;
+        castsShadow = true;
+        aBoolean3056 = false;
+        isRotated = false;
+        isInteractive = false;
+    }
+
+    public int type;
+    public static boolean lowMemory;
+    private static Buffer buffer;
+    private static int[] streamIndices;
+    public static Client clientInstance;
+    private static int cacheIndex;
+    public static ReferenceCache models = new ReferenceCache(30);
+    public static ReferenceCache baseModels = new ReferenceCache(500);
+    public static ObjectDefinition[] cache;
+    public static int TOTAL_OBJECTS;
+
+    public int anInt2958;
+    public int anInt2962;
+    public int anInt2963;
+    public int anInt2964;
+    public int translateX;
+    public int modelSizeX;
+    public int supportItems;
+    public int anInt2971;
+    public int modelSizeY;
+    public int anInt2975;
+    public boolean occludes;
+    public int anInt2983;
     public int translateZ;
-    public int anInt2083;
-    public int ambientSoundID;
-    public int category;
-    public int[] ambientSoundIds;
-    private int ambientSoundId;
-    private int int2083;
-    private int anInt2112;
-    private int anInt2113;
-    private boolean randomAnimStart;
-    private Map<Integer, Object> params = null;
-    public int[] recolorToFind;
-    public String actions[];
-    private short[] textureReplace;
-    private short[] textureFind;
-
-    public ObjectDefinition() {
-        type = -1;
-    }
-
-    public static void dumpNames() throws Exception {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("./Cache/object_names.txt"));
-        for (int i = 0; i < TOTAL_OBJECTS; i++) {
-            ObjectDefinition def = lookup(i);
-            String name = def == null ? "null" : def.name;
-            writer.write("ID: " + i + ", name: " + name + "");
-            writer.newLine();
-        }
-        writer.close();
-    }
+    public int sizeY;
+    public int anInt2987;
+    public int anInt2989;
+    public int areaId;
+    public int anInt3006;
+    public int anInt3008;
+    public int modelSizeZ;
+    public int anInt3010;
+    public int decorDisplacement;
+    public int anInt3012;
+    public int anInt3013;
+    public int ambientSoundId;
+    public int varbitId;
+    public int anInt3018;
+    public int anInt3020;
+    public int anInt3023;
+    public int anInt3024;
+    public int contrast;
+    public int anInt3030;
+    public int anInt3032;
+    public int varbitID;
+    public int translateY;
+    public int anInt3038;
+    public int surroundings;
+    public int ambient;
+    public int anInt3050;
+    public int sizeX;
+    public boolean isInteractive;
+    public boolean aBoolean2961;
+    public boolean aBoolean2972;
+    public boolean aBoolean2990;
+    public boolean aBoolean2992;
+    public boolean aBoolean2993;
+    public boolean aBoolean2998;
+    public boolean randomizeAnimStart;
+    public boolean aBoolean3002;
+    public boolean aBoolean3007;
+    public boolean removeClipping;
+    public boolean castsShadow;
+    public boolean blocksProjectile;
+    public boolean isRotated;
+    public boolean obstructsGround;
+    public boolean mergeNormals;
+    public boolean aBoolean3056;
+    public byte aByte2960;
+    public byte aByte2974;
+    public byte aByte3027;
+    public byte aByte3045;
+    public byte aByte3052;
+    public int[] modelTypes;
+    public byte[] aByteArray2996;
+    public short[] textureReplace;
+    public short[] recolorToReplace;
+    public short[] textureFind;
+    public short[] recolorToFind;
+    public int[] anIntArray2981;
+    public int[] configs;
+    public int[] anIntArray2995;
+    public int[] anIntArray3019;
+    public int[] anIntArray3036;
+    public int[][] objectModels;
+    public String[] actions;
+    public String name;
+    public Hashtable<Integer, Object> params;
 
     public static ObjectDefinition lookup(int id) {
-        if (id > streamIndices.length)
-            id = streamIndices.length - 1;
-        for (int index = 0; index < 20; index++)
-            if (cache[index].type == id)
-                return cache[index];
+        for (int j = 0; j < 50; j++) {
+            if (cache[j].type == id) {
+                return cache[j];
+            }
+        }
+        cacheIndex = (cacheIndex + 1) % 50;
+        ObjectDefinition object = cache[cacheIndex];
+        object.type = id;
+        object.setDefaults();
+        if (id >= 0 && id < TOTAL_OBJECTS && streamIndices[id] != -1) {
+            buffer.currentPosition = streamIndices[id];
+            object.decode(buffer);
+        }
 
-        cacheIndex = (cacheIndex + 1) % 20;
-        ObjectDefinition objectDef = cache[cacheIndex];
-        stream.currentPosition = streamIndices[id];
-        objectDef.type = id;
-        objectDef.reset();
-        objectDef.decode(stream);
-
-        return objectDef;
+        return object;
     }
 
     public static void clear() {
         baseModels = null;
         models = null;
+        modelBuffer1 = null;
+        modelBuffer2 = null;
         streamIndices = null;
         cache = null;
-        stream = null;
+        buffer = null;
     }
+
 
     public static void init(FileArchive archive) throws IOException {
-        stream = new Buffer(archive.readFile("loc.dat"));
-        Buffer stream = new Buffer(archive.readFile("loc.idx"));
-        TOTAL_OBJECTS = stream.readUShort();
+        buffer = new Buffer(archive.readFile("object.dat"));
+        Buffer stream = new Buffer(archive.readFile("object.idx"));
+        TOTAL_OBJECTS = archive.readFile("object.idx").length / 2;
         streamIndices = new int[TOTAL_OBJECTS];
-        int offset = 2;
-        for (int index = 0; index < TOTAL_OBJECTS; index++) {
-            streamIndices[index] = offset;
-            offset += stream.readUShort();
+        int index = 0;
+
+        for (int i = 0; i != TOTAL_OBJECTS; ++i) {
+            int size = stream.readUShort();
+            streamIndices[i] = size != 0 ? index : -1;
+            index += size;
         }
-        cache = new ObjectDefinition[20];
-        for (int index = 0; index < 20; index++)
-            cache[index] = new ObjectDefinition();
 
-        System.out.println("Loaded: " + TOTAL_OBJECTS + " objects");
-    }
+        System.out.println("Objects Read -> " + TOTAL_OBJECTS);
 
-    public void reset() {
-        objectModels = null;
-        objectTypes = null;
-        name = null;
-        description = null;
-        recolorToFind = null;
-        recolorToReplace = null;
-        textureFind = null;
-        textureReplace = null;
-        sizeX = 1;
-        sizeY = 1;
-        interactType = true;
-        blocksProjectile = true;
-        isInteractive = false;
-        contouredGround = false;
-        mergeNormals = false;
-        occludes = false;
-        animation = -1;
-        decorDisplacement = 16;
-        ambient = 0;
-        contrast = 0;
-        actions = null;
-        minimapFunction = -1;
-        mapscene = -1;
-        inverted = false;
-        castsShadow = true;
-        scaleX = 128;
-        scaleY = 128;
-        scaleZ = 128;
-        surroundings = 0;
-        translateX = 0;
-        translateY = 0;
-        translateZ = 0;
-        obstructsGround = false;
-        removeClipping = false;
-        supportItems = -1;
-        varbitID = -1;
-        varpID = -1;
-        configs = null;
-    }
-
-    public boolean method577(int i) {
-        if (objectTypes == null) {
-            if (objectModels == null)
-                return true;
-            if (i != 10)
-                return true;
-            boolean flag1 = true;
-            for (int k = 0; k < objectModels.length; k++)
-                flag1 &= Model.isCached(objectModels[k] & 0xffff);
-
-            return flag1;
+        cache = new ObjectDefinition[50];
+        for (int k = 0; k < 50; k++) {
+            cache[k] = new ObjectDefinition();
         }
-        for (int j = 0; j < objectTypes.length; j++)
-            if (objectTypes[j] == i)
-                return Model.isCached(objectModels[j] & 0xffff);
-
-        return true;
     }
 
-    public Model modelAt(int type, int orientation, int aY, int bY, int cY, int dY, int frameId) {
-        Model model = model(type, frameId, orientation);
+    public boolean method577(int type) {
+        if (modelTypes == null) {
+            if (objectModels == null) {
+                return true;
+            }
+
+            if (type != 10) {
+                return true;
+            }
+            boolean flag = true;
+            int count = objectModels.length;
+            for (int i = 0; i != count; ++i) {
+                int childCount = objectModels[i].length;
+                for (int i1 = 0; i1 != childCount; ++i1) {
+                    flag &= Model.isCached(objectModels[i][i1] & 0xffff);
+                }
+
+            }
+
+            return flag;
+        }
+        boolean flag = true;
+        int count = modelTypes.length;
+
+        for (int i = 0; i != count; ++i) {
+            if (modelTypes[i] == type) {
+                int childCount = objectModels[i].length;
+                for (int i1 = 0; i1 != childCount; ++i1) {
+                    flag &= Model.isCached(objectModels[i][i1] & 0xffff);
+                }
+                break;
+            }
+        }
+        return flag;
+    }
+
+    public Model modelAt(int type, int j, int k, int l, int i1, int j1, int k1) {
+        Animation animDef = null;
+        Model model = model(type, k1, j, animDef);
         if (model == null)
             return null;
         if (contouredGround || mergeNormals)
-            model = new Model(contouredGround, mergeNormals, model,type);
+            model = new Model(contouredGround, mergeNormals, model, type);
+        //model = new Model(contouredGround, mergeNormals, model);//todo
         if (contouredGround) {
-            int y = (aY + bY + cY + dY) / 4;
-            for (int vertex = 0; vertex < model.numVertices; vertex++) {
-                int x = model.vertexX[vertex];
-                int z = model.vertexZ[vertex];
-                int l2 = aY + ((bY - aY) * (x + 64)) / 128;
-                int i3 = dY + ((cY - dY) * (x + 64)) / 128;
-                int j3 = l2 + ((i3 - l2) * (z + 64)) / 128;
-                model.vertexY[vertex] += j3 - y;
+            int l1 = (k + l + i1 + j1) >> 2;
+            for (int i2 = 0; i2 < model.numVertices; i2++) {
+                int j2 = model.vertexX[i2] >> 2;
+                int k2 = model.vertexZ[i2] >> 2;
+                int l2 = k + (((l - k) * (j2 + 64)) >> 7);
+                int i3 = j1 + (((i1 - j1) * (j2 + 64)) >> 7);
+                int j3 = l2 + (((i3 - l2) * (k2 + 64)) >> 7);
+                model.vertexY[i2] += (j3 - l1) << 2;
             }
 
             model.calc_diagonals();
@@ -220,353 +318,516 @@ public final class ObjectDefinition implements ObjectComposition {
     }
 
     public boolean method579() {
-        if (objectModels == null)
+        if (objectModels == null) {
             return true;
-        boolean flag1 = true;
-        for (int i = 0; i < objectModels.length; i++)
-            flag1 &= Model.isCached(objectModels[i] & 0xffff);
-        return flag1;
+        }
+
+        boolean flag = true;
+        for (int i = 0; i != objectModels.length; ++i) {
+            int childCount = objectModels[i].length;
+            for (int i1 = 0; i1 != childCount; ++i1) {
+                flag &= Model.isCached(objectModels[i][i1] & 0xffff);
+            }
+        }
+
+        return flag;
     }
 
     public ObjectDefinition method580() {
-        int i = -1;
-        if (varbitID != -1) {
-            VariableBits varBit = VariableBits.varbits[varbitID];
-            int j = varBit.getSetting();
-            int k = varBit.getLow();
-            int l = varBit.getHigh();
+        int id = -1;
+        if (varbitId != -1) {
+            VariableBits variableBit = VariableBits.varbits[varbitId];
+            int j = variableBit.getSetting();
+            int k = variableBit.getLow();
+            int l = variableBit.getHigh();
             int i1 = Client.BIT_MASKS[l - k];
-            i = clientInstance.settings[j] >> k & i1;
-        } else if (varpID != -1)
-            i = clientInstance.settings[varpID];
-        if (i < 0 || i >= configs.length || configs[i] == -1)
+            id = clientInstance.settings[j] >> k & i1;
+        } else if (varbitID != -1)
+            id = clientInstance.settings[varbitID];
+        if (id < 0 || id >= configs.length || configs[id] == -1)
             return null;
         else
-            return lookup(configs[i]);
+            return lookup(configs[id]);
     }
 
-    public Model model(int j, int k, int l) {
+    private static Model[] modelBuffer1 = new Model[256];
+    private static Model[] modelBuffer2 = new Model[256];
+
+    private Model model(int j, int k, int l, Animation animDef) {
         Model model = null;
         long l1;
-        if (objectTypes == null) {
-            if (j != 10)
+        if (modelTypes == null) {
+            if (j != 0) {
                 return null;
-            l1 = (long) ((type << 6) + l) + ((long) (k + 1) << 32);
+            }
+
+            l1 = (long) ((type << 8) + l) + ((long) (k + 1) << 32);
             Model model_1 = (Model) models.get(l1);
+            //Model model_1 = null;
             if (model_1 != null) {
                 return model_1;
             }
-            if (objectModels == null)
+
+            if (objectModels == null) {
                 return null;
-            boolean flag1 = inverted ^ (l > 3);
-            int k1 = objectModels.length;
-            for (int i2 = 0; i2 < k1; i2++) {
-                int l2 = objectModels[i2];
-                if (flag1)
-                    l2 += 0x10000;
-                model = (Model) baseModels.get(l2);
-                if (model == null) {
-                    model = Model.getModel(l2 & 0xffff);
-                    if (model == null)
-                        return null;
-                    if (flag1)
-                        model.invert();
-                    baseModels.put(model, l2);
+            }
+            boolean flag = isRotated ^ (l > 3);
+            int count = objectModels.length;
+            for (int i = 0; i != count; ++i) {
+                int childCount = objectModels[i].length;
+                for (int i1 = 0; i1 != childCount; ++i1) {
+                    int id = objectModels[i][i1];
+                    if (flag)
+                        id += 0x10000;
+
+                    model = null;
+                    if (model == null) {
+                        model = Model.getModel(id & 0xffff);
+                        if (model == null)
+                            return null;
+
+                        if (flag)
+                            model.invert();
+
+                        baseModels.put(model, id);
+                    }
+                    if (childCount > 1)
+                        modelBuffer2[i1] = model;
+
                 }
-                if (k1 > 1)
-                    aModelArray741s[i2] = model;
+
+                if (childCount > 1)
+                    model = new Model(childCount, modelBuffer2);
+
+                if (count > 1)
+                    modelBuffer1[i] = model;
+
             }
 
-            if (k1 > 1)
-                model = new Model(k1, aModelArray741s,true);
+            if (count > 1)
+                model = new Model(count, modelBuffer1);
+
         } else {
             int i1 = -1;
-            for (int j1 = 0; j1 < objectTypes.length; j1++) {
-                if (objectTypes[j1] != j)
+            int count = modelTypes.length;
+            for (int j1 = 0; j1 < count; j1++) {
+                if (modelTypes[j1] != j)
                     continue;
+
                 i1 = j1;
                 break;
             }
 
             if (i1 == -1)
                 return null;
-            l1 = (long) ((type << 8) + (i1 << 3) + l) + ((long) (k + 1) << 32);
-            Model model_2 = (Model) models.get(l1);
-            if (model_2 != null) {
-                return model_2;
-            }
-            if (objectModels == null) {
+
+            l1 = (long) ((type << 6) + (i1 << 3) + l) + ((long) (k + 1) << 32);
+            //model = (Model) mruNodes2.get(l1);
+            model = null;
+            if (objectModels == null)
                 return null;
+
+            boolean flag = isRotated ^ (l > 3);
+            int childCount = objectModels[i1].length;
+            for (int i = 0; i != childCount; ++i) {
+                int id = objectModels[i1][i];
+                if (flag)
+                    id += 0x10000;
+
+                //model = (Model) mruNodes1.get(id);
+                model = null;
+                if (model == null) {
+                    model = Model.getModel(id & 0xffff);
+                    if (model == null)
+                        return null;
+
+                    if (flag)
+                        model.invert();
+
+                    baseModels.put(model, id);
+                }
+                if (childCount > 1)
+                    modelBuffer1[i] = model;
+
             }
-            int j2 = objectModels[i1];
-            boolean flag3 = inverted ^ (l > 3);
-            if (flag3)
-                j2 += 0x10000;
-            model = (Model) baseModels.get(j2);
-            if (model == null) {
-                model = Model.getModel(j2 & 0xffff);
-                if (model == null)
-                    return null;
-                if (flag3)
-                    model.invert();
-                baseModels.put(model, j2);
-            }
+
+            if (childCount > 1)
+                model = new Model(childCount, modelBuffer1);
+
         }
         boolean flag;
-        flag = scaleX != 128 || scaleY != 128 || scaleZ != 128;
+        flag = modelSizeX != 128 || modelSizeY != 128 || modelSizeZ != 128;
         boolean flag2;
         flag2 = translateX != 0 || translateY != 0 || translateZ != 0;
+        int flags = 0;
+        if (k != -1)
+            flags |= Model.getFlags(k, animDef);
+
+        if (flag2 || flag)
+            flags |= 0x4;
+
+        if (recolorToFind != null)
+            flags |= 0x2;
+
+        if (textureFind != null)
+            flags |= 0x8;
+
+        if (l > 0)
+            flags |= 0x4;
+
         Model model_3 = new Model(recolorToFind == null,
                 Frame.noAnimationInProgress(k), l == 0 && k == -1 && !flag
                 && !flag2, textureFind == null, model);
+        //Model model_3 = new Model(flags, model);//todo
         if (k != -1) {
             model_3.skin();
-            model_3.applyTransform(k);
+            model_3.applyTransform(k, animDef);
             model_3.faceGroups = null;
             model_3.vertexGroups = null;
         }
         while (l-- > 0)
             model_3.rotate90Degrees();
 
-        if (recolorToFind != null) {
+        if (recolorToFind != null)
             for (int k2 = 0; k2 < recolorToFind.length; k2++)
-                model_3.recolor(recolorToFind[k2],
-                        recolorToReplace[k2]);
+                model_3.recolor(recolorToFind[k2], recolorToReplace[k2]);
 
-        }
-        if (textureFind != null) {
+
+        if (textureFind != null)
             for (int k2 = 0; k2 < textureFind.length; k2++)
-                model_3.retexture(textureFind[k2],
-                        textureReplace[k2]);
+                model_3.retexture(textureFind[k2], textureReplace[k2]);
 
-        }
+
         if (flag)
-            model_3.scale(scaleX, scaleZ, scaleY);
+            model_3.scale(modelSizeX, modelSizeZ, modelSizeY);//+2???
+
         if (flag2)
             model_3.translate(translateX, translateY, translateZ);
-        model_3.light(85 + ambient, 768 + contrast, -50, -10, -50, !mergeNormals);
+
+        model_3.light(64 + ambient, 768 + contrast, -50, -10, -50, !mergeNormals, false);
         if (supportItems == 1)
             model_3.itemDropHeight = model_3.modelBaseY;
+
         models.put(model_3, l1);
         return model_3;
     }
 
-
     public void decode(Buffer buffer) {
-        while(true) {
+        while (true) {
             int opcode = buffer.readUnsignedByte();
-
-            if (opcode == 0) {
+            if (opcode == 0)
                 break;
-            } else if (opcode == 1) {
-                int len = buffer.readUnsignedByte();
-                if (len > 0) {
-                    if (objectModels == null) {
-                        objectTypes = new int[len];
-                        objectModels = new int[len];
 
-                        for (int i = 0; i < len; i++) {
-                            objectModels[i] = buffer.readUShort();
-                            objectTypes[i] = buffer.readUnsignedByte();
-                        }
-                    } else {
-                        buffer.currentPosition += len * 3;
-                    }
+            if (opcode == 1 || opcode == 5) {
+                if (opcode == 5 && lowMemory) {
+                    skip(buffer);
                 }
-            } else if (opcode == 2) {
-                name = buffer.readString();
-            } else if (opcode == 3) {
-                description = buffer.readString();
-            } else if (opcode == 5) {
-                int len = buffer.readUnsignedByte();
-                if (len > 0) {
-                    if (objectModels == null) {
-                        objectTypes = null;
-                        objectModels = new int[len];
-                        for (int i = 0; i < len; i++) {
-                            objectModels[i] = buffer.readUShort();
-                        }
-                    } else {
-                        buffer.currentPosition += len * 2;
-                    }
+                int count = buffer.readUnsignedByte();
+                modelTypes = new int[count];
+                objectModels = new int[count][];
+                for (int i = 0; i != count; ++i) {
+                    modelTypes[i] = buffer.readUnsignedByte();
+                    int childCount = buffer.readUnsignedByte();
+                    objectModels[i] = new int[childCount];
+                    for (int i1 = 0; i1 != childCount; ++i1)
+                        objectModels[i][i1] = buffer.readUShort();
+
                 }
-            } else if (opcode == 14) {
+
+                if (opcode == 5 && !lowMemory)
+                    skip(buffer);
+
+            } else if (opcode == 2)
+                name = buffer.readStringJagex();
+            else if (opcode == 14)
                 sizeX = buffer.readUnsignedByte();
-            } else if (opcode == 15) {
+            else if (opcode == 15)
                 sizeY = buffer.readUnsignedByte();
-            } else if (opcode == 17) {
-                interactType = false;
+            else if (opcode == 17) {
                 blocksProjectile = false;
+                anInt3010 = 0;
+                interactType = false;
             } else if (opcode == 18) {
                 blocksProjectile = false;
-            } else if (opcode == 19) {
+                aBoolean757 = false;
+            } else if (opcode == 19)
                 isInteractive = (buffer.readUnsignedByte() == 1);
-            } else if (opcode == 21) {
+            else if (opcode == 21) {
+                aByte3027 = (byte) 1;
                 contouredGround = true;
-            } else if (opcode == 22) {
+            } else if (opcode == 22)
                 mergeNormals = true;
-            } else if (opcode == 23) {
+            else if (opcode == 23)
                 occludes = true;
-            } else if (opcode == 24) {
-                animation = buffer.readUShort();
-                if (animation == 0xFFFF) {
-                    animation = -1;
+            else if (opcode == 24) {
+                int index = buffer.readUShort();
+                if (index != 0xffff) {
+                    anIntArray3019 = new int[]{index};
+                    animation = index;
                 }
-            } else if (opcode == 27) {
-                interactType = true;
-            } else if (opcode == 28) {
+            } else if (opcode == 27)
+                anInt3010 = 1;
+            else if (opcode == 28)
                 decorDisplacement = buffer.readUnsignedByte();
-            } else if (opcode == 29) {
+            else if (opcode == 29)
                 ambient = buffer.readSignedByte();
-            } else if (opcode == 39) {
-                contrast = buffer.readSignedByte() * 25;
-            } else if (opcode >= 30 && opcode < 35) {
-                if (actions == null) {
+            else if (opcode == 39)
+                contrast = 5 * buffer.readSignedByte();
+
+            else if (opcode >= 30 && opcode < 35) {
+                if (actions == null)
                     actions = new String[5];
-                }
-                actions[opcode - 30] = buffer.readString();
-                if (actions[opcode - 30].equalsIgnoreCase("Hidden")) {
-                    actions[opcode - 30] = null;
-                }
+
+                actions[opcode - 30] = buffer.readStringJagex();
             } else if (opcode == 40) {
-                int len = buffer.readUnsignedByte();
-                recolorToFind = new int[len];
-                recolorToReplace = new int[len];
-                for (int i = 0; i < len; i++) {
-                    recolorToFind[i] = buffer.readUShort();
-                    recolorToReplace[i] = buffer.readUShort();
+                int count = buffer.readUnsignedByte();
+                recolorToFind = new short[count];
+                recolorToReplace = new short[count];
+                for (int i = 0; i != count; ++i) {
+                    recolorToFind[i] = (short) buffer.readUShort();
+                    recolorToReplace[i] = (short) buffer.readUShort();
                 }
+
             } else if (opcode == 41) {
-                int len = buffer.readUnsignedByte();
-                textureFind = new short[len];
-                textureReplace = new short[len];
-                for (int i = 0; i < len; i++) {
+                int count = buffer.readUnsignedByte();
+                textureFind = new short[count];
+                textureReplace = new short[count];
+                for (int i = 0; i != count; ++i) {
                     textureFind[i] = (short) buffer.readUShort();
                     textureReplace[i] = (short) buffer.readUShort();
                 }
-            } else if (opcode == 61) {
-                category = buffer.readUShort();
-            } else if (opcode == 62) {
-                inverted = true;
-            } else if (opcode == 64) {
+
+            } else if (opcode == 42) {
+                int count = buffer.readUnsignedByte();
+                aByteArray2996 = new byte[count];
+                for (int i = 0; i != count; ++i)
+                    aByteArray2996[i] = buffer.readSignedByte();
+
+            } else if (opcode == 62)
+                isRotated = true;
+            else if (opcode == 64)
                 castsShadow = false;
-            } else if (opcode == 65) {
-                scaleX = buffer.readUShort();
-            } else if (opcode == 66) {
-                scaleY = buffer.readUShort();
-            } else if (opcode == 67) {
-                scaleZ = buffer.readUShort();
-            } else if (opcode == 68) {
-                mapscene = buffer.readUShort();
-            } else if (opcode == 69) {
+            else if (opcode == 65)
+                modelSizeX = buffer.readUShort();
+            else if (opcode == 66)
+                modelSizeY = buffer.readUShort();
+            else if (opcode == 67)
+                modelSizeZ = buffer.readUShort();
+            else if (opcode == 69)
                 surroundings = buffer.readUnsignedByte();
-            } else if (opcode == 70) {
-                translateX = buffer.readUShort();
-            } else if (opcode == 71) {
-                translateY = buffer.readUShort();
-            } else if (opcode == 72) {
-                translateZ = buffer.readUShort();
-            } else if (opcode == 73) {
+            else if (opcode == 70)
+                translateX = buffer.readShort();
+            else if (opcode == 71)
+                translateY = buffer.readShort();
+            else if (opcode == 72)
+                translateZ = buffer.readShort();
+            else if (opcode == 73)
                 obstructsGround = true;
-            } else if (opcode == 74) {
+            else if (opcode == 74)
                 removeClipping = true;
-            } else if (opcode == 75) {
+            else if (opcode == 75)
                 supportItems = buffer.readUnsignedByte();
-            } else if (opcode == 78) {
-                ambientSoundID = buffer.readUShort(); // ambient sound id
-                anInt2083 = buffer.readUnsignedByte();
-            } else if (opcode == 79) {
-                anInt2112 = buffer.readUShort();
-                anInt2113 = buffer.readUShort();
-                anInt2083 = buffer.readUShort();
 
-                int length = buffer.readUnsignedByte();
-                int[] anims = new int[length];
-
-                for (int index = 0; index < length; ++index)
-                {
-                    anims[index] = buffer.readUShort();
-                }
-                ambientSoundIds = anims;
-            } else if (opcode == 81) {
-                buffer.readUnsignedByte();
-            } else if (opcode == 82) {
-                minimapFunction = buffer.readUShort();
-            } else if (opcode == 89) {
-                randomAnimStart = true;
-            } else if (opcode == 77 || opcode == 92) {
-                varpID = buffer.readUShort();
-
-                if (varpID == 0xFFFF) {
-                    varpID = -1;
-                }
+            else if (opcode == 77 || opcode == 92) {
+                varbitId = buffer.readUShort();
+                if (varbitId == 0xffff)
+                    varbitId = -1;
 
                 varbitID = buffer.readUShort();
-
-                if (varbitID == 0xFFFF) {
+                if (varbitID == 0xffff)
                     varbitID = -1;
-                }
 
-                int value = -1;
-
+                int ending = -1;
                 if (opcode == 92) {
-                    value = buffer.readUShort();
+                    ending = buffer.readUShort();
+                    if (ending == 0xffff)
+                        ending = -1;
 
-                    if (value == 0xFFFF) {
-                        value = -1;
-                    }
                 }
-
-                int len = buffer.readUnsignedByte();
-
-                configs = new int[len + 2];
-                for (int i = 0; i <= len; ++i) {
+                int count = buffer.readUnsignedByte();
+                configs = new int[count + 2];
+                for (int i = 0; i <= count; ++i) {
                     configs[i] = buffer.readUShort();
-                    if (configs[i] == 0xFFFF) {
+                    if (configs[i] == 0xffff)
                         configs[i] = -1;
-                    }
+
                 }
-                configs[len + 1] = value;
-            } else if (opcode == 249) {
-                int length = buffer.readUnsignedByte();
 
-                Map<Integer, Object> params = new HashMap<>(length);
-                for (int i = 0; i < length; i++)
-                {
-                    boolean isString = buffer.readUnsignedByte() == 1;
-                    int key = buffer.read24Int();
-                    Object value;
+                configs[count + 1] = ending;
+            } else if (opcode == 78) {
+                ambientSoundId = buffer.readUShort();
+                anInt3012 = buffer.readUnsignedByte();
+            } else if (opcode == 79) {
+                anInt2989 = buffer.readUShort();
+                anInt2971 = buffer.readUShort();
+                anInt3012 = buffer.readUnsignedByte();
+                int count = buffer.readUnsignedByte();
+                anIntArray3036 = new int[count];
+                for (int i = 0; i != count; ++i)
+                    anIntArray3036[i] = buffer.readUShort();
 
-                    if (isString) {
-                        value = buffer.readString();
-                        System.out.println(value);
-                    } else {
-                        value = buffer.readInt();
-                    }
+            } else if (opcode == 81) {
+                aByte3027 = (byte) 2;
+                anInt3023 = buffer.readUnsignedByte() * 256;
+            } else if (opcode == 82)
+                aBoolean2990 = true;
+            else if (opcode == 88)
+                aBoolean2972 = false;
+            else if (opcode == 89)
+                randomizeAnimStart = false;
+            else if (opcode == 91)
+                aBoolean3002 = true;
+            else if (opcode == 93) {
+                aByte3027 = (byte) 3;
+                anInt3023 = buffer.readUShort();
+            } else if (opcode == 94)
+                aByte3027 = (byte) 4;
 
+            else if (opcode == 95) {
+                aByte3027 = (byte) 5;
+                anInt3023 = buffer.readShort();
+            } else if (opcode == 97)
+                aBoolean3056 = true;
+            else if (opcode == 98)
+                aBoolean2998 = true;
+
+            else if (opcode == 99) {
+                anInt2987 = buffer.readUnsignedByte();
+                anInt3008 = buffer.readUShort();
+            } else if (opcode == 100) {
+                anInt3038 = buffer.readUnsignedByte();
+                anInt3013 = buffer.readUShort();
+            } else if (opcode == 101)
+                anInt2958 = buffer.readUnsignedByte();
+            else if (opcode == 102) {
+                mapscene = buffer.readUShort();
+            } else if (opcode == 103)
+                occludes = false;
+            else if (opcode == 104)
+                anInt3024 = buffer.readUnsignedByte();
+            else if (opcode == 105)
+                aBoolean3007 = true;
+
+            else if (opcode == 106) {
+                int count = buffer.readUnsignedByte();
+                int total = 0;
+                anIntArray3019 = new int[count];
+                anIntArray2995 = new int[count];
+                for (int i = 0; i != count; ++i) {
+                    anIntArray3019[i] = buffer.readUShort();
+                    if (anIntArray3019[i] == 0xffff)
+                        anIntArray3019[i] = -1;
+
+                    if (i == 0)
+                        animation = anIntArray3019[i];
+
+                    total += anIntArray2995[i] = buffer.readUnsignedByte();
+                }
+
+                for (int i = 0; i != count; ++i)
+                    anIntArray2995[i] = anIntArray2995[i] * 0xffff / total;
+
+            } else if (opcode == 107)
+                areaId = buffer.readUShort();
+
+            else if (opcode >= 150 && opcode < 155) {
+                if (actions == null)
+                    actions = new String[5];
+
+                actions[opcode - 150] = buffer.readStringJagex();
+                //if (!aClass112_3028.aBoolean1431)
+                //	actions[opcode - 150] = null;
+
+            } else if (opcode == 160) {
+                int count = buffer.readUnsignedByte();
+                anIntArray2981 = new int[count];
+                for (int i = 0; i != count; ++i)
+                    anIntArray2981[i] = buffer.readUShort();
+
+            } else if (opcode == 162) {
+                aByte3027 = (byte) 3;
+                anInt3023 = buffer.readInt();
+            } else if (opcode == 163) {
+                aByte2974 = buffer.readSignedByte();
+                aByte3045 = buffer.readSignedByte();
+                aByte3052 = buffer.readSignedByte();
+                aByte2960 = buffer.readSignedByte();
+            } else if (opcode == 164)
+                anInt2964 = buffer.readShort();
+            else if (opcode == 165)
+                anInt2963 = buffer.readShort();
+            else if (opcode == 166)
+                anInt3018 = buffer.readShort();
+            else if (opcode == 167)
+                anInt2983 = buffer.readUShort();
+            else if (opcode == 168)
+                aBoolean2961 = true;
+            else if (opcode == 169)
+                aBoolean2993 = true;
+            else if (opcode == 170)
+                anInt3032 = buffer.readUSmart();
+            else if (opcode == 171)
+                anInt2962 = buffer.readUSmart();
+
+            else if (opcode == 173) {
+                anInt3050 = buffer.readUShort();
+                anInt3020 = buffer.readUShort();
+            } else if (opcode == 177)
+                aBoolean2992 = true;
+            else if (opcode == 178)
+                anInt2975 = buffer.readUnsignedByte();
+
+            else if (opcode == 249) {
+                int count = buffer.readUnsignedByte();
+                if (params == null)
+                    params = new Hashtable<>();
+
+                for (int i = 0; i != count; ++i) {
+                    boolean string = buffer.readUnsignedByte() == 1;
+                    int key = buffer.readMedium();
+                    Object value = string ? buffer.readStringJagex() : buffer.readInt();
                     params.put(key, value);
                 }
 
-                this.params = params;
             } else {
-
+                System.out.println("[ObjectDef] Unknown opcode: " + opcode);
+                break;
             }
-
+            post();
         }
 
-        if (name != null && !name.equals("null")) {
-            isInteractive = objectModels != null && (objectTypes == null || objectTypes[0] == 10);
-            if (actions != null)
+    }
+
+    private void post() {
+        if (isInteractive) {
+            isInteractive = false;
+            if (modelTypes != null && modelTypes.length == 1 && modelTypes[0] == 10)
                 isInteractive = true;
-        }
 
-        if (removeClipping) {
-            interactType = false;
-            blocksProjectile = false;
-        }
+            if (!isInteractive && actions != null)
+                for (int i = 0; i != 5; ++i)
+                    if (actions[i] != null) {
+                        isInteractive = true;
+                        break;
+                    }
 
-        if (supportItems == -1) {
-            supportItems = interactType ? 1 : 0;
+
+        }
+        if (supportItems == -1)
+            supportItems = anInt3010 == 0 ? 0 : 1;
+
+        if (anIntArray3019 != null || aBoolean2998 || configs != null)
+            aBoolean2992 = true;
+
+        hasActions = isInteractive;
+    }
+
+    private void skip(Buffer buffer) {
+        int count = buffer.readUnsignedByte();
+        for (int i = 0; i != count; ++i) {
+            ++buffer.currentPosition;
+            int childCount = buffer.readUnsignedByte();
+            buffer.currentPosition += childCount * 2;
         }
     }
 

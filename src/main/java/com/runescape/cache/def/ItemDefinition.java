@@ -12,6 +12,7 @@ import net.runelite.rs.api.RSItemComposition;
 import net.runelite.rs.api.RSIterableNodeHashTable;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 
 public final class ItemDefinition implements RSItemComposition {
 
@@ -24,12 +25,12 @@ public final class ItemDefinition implements RSItemComposition {
     private static Buffer item_data;
     private static int[] streamIndices;
     public int cost;
-    public int[] colorReplace;
+    public short[] colorReplace;
     private short[] textureReplace;
     private short[] textureFind;
 
     public int id;
-    public int[] colorFind;
+    public short[] colorFind;
     public boolean members;
     public int noted_item_id;
     public int femaleModel1;
@@ -78,33 +79,35 @@ public final class ItemDefinition implements RSItemComposition {
     }
 
     public static void init(FileArchive archive) {
-        item_data = new Buffer(archive.readFile("obj.dat"));
-        Buffer stream = new Buffer(archive.readFile("obj.idx"));
+        item_data = new Buffer(archive.readFile("item.dat"));
+        Buffer buffer = new Buffer(archive.readFile("item.idx"));
 
-        totalItems = stream.readUShort();
+        totalItems = archive.readFile("item.idx").length / 2;
         streamIndices = new int[totalItems];
-        int offset = 2;
 
-        for (int _ctr = 0; _ctr < totalItems; _ctr++) {
-            streamIndices[_ctr] = offset;
-            offset += stream.readUShort();
+        int index = 0;
+        for (int i = 0; i != totalItems; ++i) {
+            int size = buffer.readUShort();
+            streamIndices[i] = size != 0 ? index : -1;
+            index += size;
         }
 
-        cache = new ItemDefinition[10];
+        cache = new ItemDefinition[50];
 
-        for (int _ctr = 0; _ctr < 10; _ctr++) {
+        for (int _ctr = 0; _ctr < 50; _ctr++) {
             cache[_ctr] = new ItemDefinition();
         }
 
-        System.out.println("Loaded: " + totalItems + " items");
+        System.out.println("Items Read -> " + totalItems);
     }
 
     public static ItemDefinition lookup(int itemId) {
-        for (int count = 0; count < 10; count++)
+        for (int count = 0; count < 50; count++) {
             if (cache[count].id == itemId)
                 return cache[count];
+        }
 
-        cacheIndex = (cacheIndex + 1) % 10;
+        cacheIndex = (cacheIndex + 1) % 50;
         ItemDefinition itemDef = cache[cacheIndex];
         if (itemId > 0)
             item_data.currentPosition = streamIndices[itemId];
@@ -112,90 +115,14 @@ public final class ItemDefinition implements RSItemComposition {
         itemDef.setDefaults();
         itemDef.decode(item_data);
 
-        if (itemDef.noted_item_id != -1)
+        if (itemDef.noted_item_id != -1) {
             itemDef.toNote();
-
-        if (itemId == 4724 || itemId == 4726 || itemId == 4728 || itemId == 4730 || itemId == 4753 || itemId == 4755 || itemId == 4757 || itemId == 4759 || itemId == 4745 || itemId == 4747 || itemId == 4749 || itemId == 4751 ||
-                itemId == 4708 || itemId == 4710 || itemId == 4712 || itemId == 4714 || itemId == 4732 || itemId == 4734 || itemId == 4736 || itemId == 4738 || itemId == 4716 || itemId == 4718 || itemId == 4720 || itemId == 4722) {
-            itemDef.interfaceOptions[2] = "Set";
         }
 
-        /**
-         * Place customs here
-         */
-        switch (itemId) {
-            case 13302:
-                itemDef.name = "Crate key";
-                itemDef.colorFind = new int[]{8128};
-                itemDef.colorReplace = new int[]{5231};
-                break;
-            case 5022:
-                itemDef.name = "Spin ticket";
-                itemDef.colorFind = new int[]{100};
-                itemDef.colorReplace = new int[]{10562};
-                //[10458,0,0],"newModelColor":[10562
-                break;
-            case 5509:
-            case 5510:
-            case 5512:
-            case 5514:
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[0] = "Fill";
-                itemDef.interfaceOptions[1] = null;
-                itemDef.interfaceOptions[2] = "Empty";
-                itemDef.interfaceOptions[3] = "Check";
-                break;
-            case 12881:
-            case 12875:
-            case 12873:
-            case 12883:
-            case 12879:
-            case 12877:
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[0] = "Open";
-                break;
-
-            case 8013:
-                itemDef.name = "Home teleport";
-                break;
-            case 2542:
-                itemDef.copy(lookup(1505));
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[0] = "Read";
-                itemDef.name = "Preserve scroll";
-                itemDef.stackable = false;
-                break;
-            case 2543:
-                itemDef.copy(lookup(1505));
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[0] = "Read";
-                itemDef.name = "Rigour scroll";
-                itemDef.stackable = false;
-                break;
-            case 2544:
-                itemDef.copy(lookup(1505));
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[0] = "Read";
-                itemDef.name = "Augury scroll";
-                itemDef.stackable = false;
-                break;
-            case 2545:
-                itemDef.copy(lookup(12846));
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[0] = "Read";
-                itemDef.name = "Target-teleport scroll";
-                itemDef.stackable = false;
-                break;
-            case 12006:
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[1] = "Wield";
-                break;
-            case 12926:
-                itemDef.interfaceOptions = new String[5];
-                itemDef.interfaceOptions[1] = "Wield";
-                itemDef.interfaceOptions[2] = "Check";
-                break;
+        if (itemDef.lendTemplateID != -1) {
+            itemDef.toLend();
         }
+
         return itemDef;
     }
 
@@ -458,61 +385,107 @@ public final class ItemDefinition implements RSItemComposition {
     }
 
     private void setDefaults() {
-        inventory_model = 0;
-        name = null;
-        colorReplace = null;
-        colorFind = null;
-        textureReplace = null;
-        textureFind = null;
-
-        zoom2d = 2000;
-        xan2d = 0;
-        yan2d = 0;
-        zan2d = 0;
-        xOffset2d = 0;
-        yOffset2d = 0;
-        stackable = false;
-        cost = 1;
-        members = false;
-        options = null;
-        interfaceOptions = null;
-        maleModel0 = -1;
-        maleModel1 = -1;
         maleOffset = 0;
-        femaleModel0 = -1;
-        femaleModel1 = -1;
         femaleOffset = 0;
-        maleModel2 = -1;
-        femaleModel2 = -1;
-        maleHeadModel = -1;
-        maleHeadModel2 = -1;
-        femaleHeadModel = -1;
-        femaleHeadModel2 = -1;
-        countObj = null;
+        aByteArray1882 = null;
+        textureFind = null;
+        colorFind = null;
+        colorReplace = null;
+        textureReplace = null;
         countCo = null;
-        unnoted_item_id = -1;
-        noted_item_id = -1;
-        resizeX = 128;
-        resizeY = 128;
-        resizeZ = 128;
+        countObj = null;
+        anIntArray1926 = null;
+        interfaceOptions = null;
+        options = null;
+        params = null;
+        inventory_model = 0;
+        anInt1851 = -1;
+        anInt1849 = -1;
+        maleModel0 = -1;
+        anInt1864 = -1;
+        maleModel1 = -1;
+        zan2d = 0;
+        lendTemplateID = -1;
+        anInt1862 = -1;
+        bought_id = -1;
+        maleModel2 = -1;
         ambient = 0;
         contrast = 0;
+        femaleHeadModel = -1;
+        zoom2d = 2000;
+        anInt1879 = -1;
         team = 0;
+        members = false;
+        resizeY = 128;
+        xOffset2d = 0;
+        name = "null";
+        anInt1859 = -1;
+        resizeX = 128;
+        maleHeadModel2 = -1;
+        femaleHeadModel2 = -1;
+        anInt1908 = -1;
+        yan2d = 0;
+        anInt1895 = 0;
+        anInt1819 = -1;
+        anInt1900 = -1;
+        anInt1893 = 0;
+        femaleModel1 = -1;
+        yOffset2d = 0;
+        anInt1890 = 0;
+        maleHeadModel = -1;
+        anInt1919 = 0;
+        stackable = false;
+        resizeZ = 128;
+        femaleModel2 = -1;
+        noted_item_id = -1;
+        unnoted_item_id = -1;
+        cost = 1;
+        anInt1877 = 0;
+        bought_template_id = -1;
+        xan2d = 0;
+        lendID = -1;
+        femaleModel0 = -1;
+        anInt1930 = 0;
+        anInt1916 = 0;
+        anInt1931 = 0;
+        tradeable = false;
     }
 
-    private void copy(ItemDefinition copy) {
-        yan2d = copy.yan2d;
-        xan2d = copy.xan2d;
-        zan2d = copy.zan2d;
-        resizeX = copy.resizeX;
-        resizeY = copy.resizeY;
-        resizeZ = copy.resizeZ;
-        zoom2d = copy.zoom2d;
-        xOffset2d = copy.xOffset2d;
-        yOffset2d = copy.yOffset2d;
-        inventory_model = copy.inventory_model;
-        stackable = copy.stackable;
+    private void toLend() {
+        ItemDefinition itemDef = lookup(lendTemplateID);
+        inventory_model = itemDef.inventory_model;
+        xan2d = itemDef.xan2d;
+        yan2d = itemDef.yan2d;
+        xOffset2d = itemDef.xOffset2d;
+        yOffset2d = itemDef.yOffset2d;
+        zoom2d = itemDef.zoom2d;
+        zan2d = itemDef.zan2d;
+        itemDef = lookup(lendID);
+        name = itemDef.name;
+        members = itemDef.members;
+        cost = 0;
+        maleModel0 = itemDef.maleModel0;
+        femaleModel0 = itemDef.femaleModel0;
+        maleModel1 = itemDef.maleModel1;
+        femaleModel1 = itemDef.femaleModel1;
+        maleModel2 = itemDef.maleModel2;
+        femaleModel2 = itemDef.femaleModel2;
+        team = itemDef.team;
+        interfaceOptions = itemDef.interfaceOptions;
+        options =  itemDef.options;
+        stackable = itemDef.stackable;
+        countCo = itemDef.countCo;
+        countObj = itemDef.countObj;
+        colorReplace = itemDef.colorReplace;
+        colorFind = itemDef.colorFind;
+        textureReplace = itemDef.textureReplace;
+        textureFind = itemDef.textureFind;
 
+        if (interfaceOptions == null) {
+            interfaceOptions = new String[5];
+        }
+
+        interfaceOptions[4] = "Discard";
     }
 
     private void toNote() {
@@ -702,78 +675,105 @@ public final class ItemDefinition implements RSItemComposition {
     private int bought_template_id;
     private int placeholder_id;
     private int placeholder_template_id;
-    public HashMap<Integer,Object> params;
 
-    private void decode(Buffer buffer) {
+    public Hashtable<Integer, Object> params;
+    public byte[] aByteArray1882;
+    public int anInt1879;
+    public int anInt1877;
+    public int lendID;
+    public int lendTemplateID;
+    public int anInt1930;
+    public int anInt1931;
+    public int anInt1893;
+    public int anInt1895;
+    public int anInt1890;
+    public int anInt1916;
+    public int anInt1908;
+    public int anInt1819;
+    public int anInt1849;
+    public int anInt1851;
+    public int anInt1900;
+    public int anInt1859;
+    public int anInt1864;
+    public int anInt1862;
+    public int anInt1919;
+    public int[] anIntArray1926;
+
+    public void decode(Buffer buffer) {
         while (true) {
             int opcode = buffer.readUnsignedByte();
             if (opcode == 0)
-                return;
+                break;
+
             if (opcode == 1)
                 inventory_model = buffer.readUShort();
             else if (opcode == 2)
-                name = buffer.readJagexString();
+                name = buffer.readStringJagex();
             else if (opcode == 4)
                 zoom2d = buffer.readUShort();
             else if (opcode == 5)
                 xan2d = buffer.readUShort();
             else if (opcode == 6)
                 yan2d = buffer.readUShort();
-            else if (opcode == 7) {
-                xOffset2d = buffer.readUShort();
-                if (xOffset2d > 32767)
-                    xOffset2d -= 0x10000;
-            } else if (opcode == 8) {
-                yOffset2d = buffer.readUShort();
-                if (yOffset2d > 32767)
-                    yOffset2d -= 0x10000;
-            } else if (opcode == 11)
+            else if (opcode == 7)
+                xOffset2d = buffer.readShort();
+            else if (opcode == 8)
+                yOffset2d = buffer.readShort();
+            else if (opcode == 11)
                 stackable = true;
-            else if (opcode == 12) {
+            else if (opcode == 12)
                 cost = buffer.readInt();
-            } else if (opcode == 16)
+            else if (opcode == 16)
                 members = true;
-            else if (opcode == 23) {
+            else if (opcode == 18)
+                anInt1879 = buffer.readUShort();
+            else if (opcode == 23)
                 maleModel0 = buffer.readUShort();
-                maleOffset = buffer.readSignedByte();
-            } else if (opcode == 24)
+            else if (opcode == 24)
                 maleModel1 = buffer.readUShort();
-            else if (opcode == 25) {
+            else if (opcode == 25)
                 femaleModel0 = buffer.readUShort();
-                femaleOffset = buffer.readSignedByte();
-            } else if (opcode == 26)
+            else if (opcode == 26)
                 femaleModel1 = buffer.readUShort();
+
             else if (opcode >= 30 && opcode < 35) {
                 if (options == null)
                     options = new String[5];
-                options[opcode - 30] = buffer.readString();
-                if (options[opcode - 30].equalsIgnoreCase("hidden"))
-                    options[opcode - 30] = null;
+
+                options[opcode - 30] = buffer.readStringJagex();
             } else if (opcode >= 35 && opcode < 40) {
                 if (interfaceOptions == null)
                     interfaceOptions = new String[5];
-                interfaceOptions[opcode - 35] = buffer.readString();
+
+                interfaceOptions[opcode - 35] = buffer.readStringJagex();
             } else if (opcode == 40) {
-                int length = buffer.readUnsignedByte();
-                colorReplace = new int[length];
-                colorFind = new int[length];
-                for (int index = 0; index < length; index++) {
-                    colorFind[index] = buffer.readUShort();
-                    colorReplace[index] = buffer.readUShort();
+                int count = buffer.readUnsignedByte();
+                colorReplace = new short[count];
+                colorFind = new short[count];
+                for (int i = 0; i != count; ++i) {
+                    colorReplace[i] = (short) buffer.readUShort();
+                    colorFind[i] = (short) buffer.readUShort();
                 }
             } else if (opcode == 41) {
-                int length = buffer.readUnsignedByte();
-                textureFind = new short[length];
-                textureReplace = new short[length];
-                for (int index = 0; index < length; index++) {
-                    textureFind[index] = (short) buffer.readUShort();
-                    textureReplace[index] = (short) buffer.readUShort();
+                int count = buffer.readUnsignedByte();
+                textureReplace = new short[count];
+                textureFind = new short[count];
+                for (int i = 0; i != count; ++i) {
+                    textureReplace[i] = (short) buffer
+                            .readUShort();
+                    textureFind[i] = (short) buffer
+                            .readUShort();
                 }
+
             } else if (opcode == 42) {
-                shiftClickIndex = buffer.readUnsignedByte();
-            } else if (opcode == 65) {
+                int count = buffer.readUnsignedByte();
+                aByteArray1882 = new byte[count];
+                for (int i = 0; i != count; ++i)
+                    aByteArray1882[i] = buffer.readSignedByte();
+
+            } else if (opcode == 65)
                 tradeable = true;
-            } else if (opcode == 78)
+            else if (opcode == 78)
                 maleModel2 = buffer.readUShort();
             else if (opcode == 79)
                 femaleModel2 = buffer.readUShort();
@@ -785,25 +785,15 @@ public final class ItemDefinition implements RSItemComposition {
                 maleHeadModel2 = buffer.readUShort();
             else if (opcode == 93)
                 femaleHeadModel2 = buffer.readUShort();
-            else if (opcode == 94)
-                category = buffer.readUShort();
-
             else if (opcode == 95)
                 zan2d = buffer.readUShort();
+            else if (opcode == 96)
+                anInt1877 = buffer.readUnsignedByte();
             else if (opcode == 97)
                 unnoted_item_id = buffer.readUShort();
             else if (opcode == 98)
                 noted_item_id = buffer.readUShort();
-            else if (opcode == 110)
-                resizeX = buffer.readUShort();
-            else if (opcode == 111)
-                resizeY = buffer.readUShort();
-            else if (opcode == 112)
-                resizeZ = buffer.readUShort();
-            else if (opcode == 113)
-                ambient = buffer.readSignedByte();
-            else if (opcode == 114)
-                contrast = buffer.readSignedByte() * 5;
+
             else if (opcode >= 100 && opcode < 110) {
                 if (countObj == null) {
                     countObj = new int[10];
@@ -823,38 +813,62 @@ public final class ItemDefinition implements RSItemComposition {
                 contrast = buffer.readSignedByte() * 5;
             else if (opcode == 115)
                 team = buffer.readUnsignedByte();
+            else if (opcode == 121)
+                lendID = buffer.readUShort();
+            else if (opcode == 122)
+                lendTemplateID = buffer.readUShort();
+
+            else if (opcode == 125) {
+                anInt1931 = buffer.readSignedByte();
+                anInt1930 = buffer.readSignedByte();
+                anInt1895 = buffer.readSignedByte();
+            } else if (opcode == 126) {
+                anInt1890 = buffer.readSignedByte();
+                anInt1893 = buffer.readSignedByte();
+                anInt1916 = buffer.readSignedByte();
+            } else if (opcode == 127) {
+                anInt1908 = buffer.readUnsignedByte();
+                anInt1819 = buffer.readUShort();
+            } else if (opcode == 128) {
+                anInt1849 = buffer.readUnsignedByte();
+                anInt1851 = buffer.readUShort();
+            } else if (opcode == 129) {
+                anInt1900 = buffer.readUnsignedByte();
+                anInt1859 = buffer.readUShort();
+            } else if (opcode == 130) {
+                anInt1864 = buffer.readUnsignedByte();
+                anInt1862 = buffer.readUShort();
+            } else if (opcode == 132) {
+                int count = buffer.readUnsignedByte();
+                anIntArray1926 = new int[count];
+                for (int i = 0; i != count; ++i)
+                    anIntArray1926[i] = buffer.readUShort();
+
+            } else if (opcode == 134)
+                anInt1919 = buffer.readUnsignedByte();
             else if (opcode == 139)
                 bought_id = buffer.readUShort();
             else if (opcode == 140)
                 bought_template_id = buffer.readUShort();
-            else if (opcode == 148)
-                placeholder_id = buffer.readUShort();
-            else if (opcode == 149) {
-                placeholder_template_id = buffer.readUShort();
-            } else if (opcode == 249) {
-                int length = buffer.readUnsignedByte();
 
-                params = new HashMap<>(length);
+            else if (opcode == 249) {
+                int count = buffer.readUnsignedByte();
+                if (params == null)
+                    params = new Hashtable<>();
 
-                for (int i = 0; i < length; i++) {
-                    boolean isString = buffer.readUnsignedByte() == 1;
-                    int key = buffer.read24Int();
-                    Object value;
-
-                    if (isString) {
-                        value = buffer.readString();
-                    } else {
-                        value = buffer.readInt();
-                    }
-
+                for (int i = 0; i != count; ++i) {
+                    boolean string = buffer.readUnsignedByte() == 1;
+                    int key = buffer.readMedium();
+                    Object value = string ? buffer.readString() : Integer.valueOf(buffer.readInt());
                     params.put(key, value);
                 }
+
             } else {
-                System.err.printf("Error unrecognised {Items} opcode: %d%n%n", opcode);
+                System.out.println("[ItemDef] Unknown opcode: " + opcode);
+                break;
             }
         }
     }
-
     @Override
     public int getHaPrice() {
         return 0;
