@@ -1,12 +1,7 @@
 package com.runescape;
 
 import java.applet.Applet;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +13,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.runescape.cache.graphics.Slider;
 import com.runescape.cache.graphics.widget.SettingsWidget;
@@ -25,8 +24,12 @@ import com.runescape.cache.graphics.widget.Widget;
 import com.runescape.draw.Console;
 import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.model.content.Keybinding;
+import com.runescape.util.AssetUtils;
 
-import static com.runescape.Client.frameMode;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import static com.runescape.Client.*;
 
 public class GameApplet extends Applet implements Runnable, MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener, FocusListener, WindowListener {
@@ -106,6 +109,9 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
 
     }
 
+    BufferedImage backgroundImage;
+    Image loadingCircleImage;
+
     public Thread clientThread;
 
     public void run() {
@@ -120,6 +126,14 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
         if (gameFrame != null) {
             gameFrame.addWindowListener(this);
         }
+
+        try{
+            backgroundImage = ImageIO.read(AssetUtils.INSTANCE.getResource("loadingBackground.png"));
+            loadingCircleImage = new ImageIcon(AssetUtils.INSTANCE.getResource("loadingCircle.gif")).getImage();
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+
         drawLoadingText(0, "Loading...");
         startUp();
         int i = 0;
@@ -727,7 +741,7 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
         thread.setPriority(i);
         return thread;
     }
-
+    ExecutorService executor = Executors.newSingleThreadExecutor();
     void drawLoadingText(int percentage, String loadingText) {
         graphics = getGameComponent().getGraphics();
         while (graphics == null) {
@@ -751,17 +765,17 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
             graphics.fillRect(0, 0, Client.frameWidth, Client.frameHeight);
             shouldClearScreen = false;
         }
-        Color color = new Color(140, 17, 17);
-        int y = Client.frameHeight / 2 - 18;
-        graphics.setColor(color);
-        graphics.drawRect(Client.frameWidth / 2 - 152, y, 304, 34);
-        graphics.fillRect(Client.frameWidth / 2 - 150, y + 2, percentage * 3, 30);
-        graphics.setColor(Color.black);
-        graphics.fillRect((Client.frameWidth / 2 - 150) + percentage * 3, y + 2, 300 - percentage * 3, 30);
-        graphics.setFont(font);
-        graphics.setColor(Color.white);
-        graphics.drawString(loadingText, (Client.frameWidth - fontmetrics.stringWidth(loadingText)) / 2, y + 22);
-        graphics.drawString("", (Client.frameWidth - fontmetrics1.stringWidth("")) / 2, y - 8);
+
+        int boxX = frameWidth / 2 - (276 / 2);
+        int boxY = frameHeight / 2 - (252 / 2);
+
+
+        graphics.drawImage(backgroundImage, boxX,boxY, null);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            graphics.drawImage(loadingCircleImage,boxX + 100,boxY + 126,null);
+        });
+
     }
 
 }

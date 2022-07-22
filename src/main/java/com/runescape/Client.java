@@ -4254,6 +4254,24 @@ public class Client extends GameApplet implements RSClient {
         stream.disableBitAccess();
     }
 
+    public void drawLoadingText(int i, String s) {
+        anInt1079 = i;
+        aString1049 = s;
+        if (titleArchive == null) {
+            super.drawLoadingText(i, s);
+            return;
+        }
+        System.out.println("dfdf");
+        resetAllImageProducers();
+        char c = '\u0168';
+        char c1 = '\310';
+        byte byte1 = 20;
+        boldText.drawText(0xffffff, Configuration.CLIENT_NAME + " is loading - please wait...",
+                c1 / 2 - 26 - byte1, c / 2);
+        int j = c1 / 2 - 18 - byte1;
+
+    }
+
     public void processGameLoop() {
         if (rsAlreadyLoaded || loadingError || genericLoadingError)
             return;
